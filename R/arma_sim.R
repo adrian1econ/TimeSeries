@@ -1,0 +1,89 @@
+test_innovation <- function(len){
+        c(1, rep(0,len-1))
+}
+
+
+
+#' Simulate ARMA-Process
+#'
+#' Description
+#'
+#' Details
+#'
+#' @param phi,theta A numeric vector specifying the AR(MA)-Coefficients of an
+#'   ARMA(p,q) model.
+#' @param n An integer specifying the length of the resulting time series.
+#' @param innov.gen A function from which the random innovations are drawn.
+#' @param burnin An integer specifying the number of datapoints that are going
+#'   to be discarded, so that the characteristics of final series do not depend
+#'   on the initial values.
+#' @return Object of class "arma" containing the simulated arma series, the
+#'   innovation series and all the specified parameters.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
+arma_sim <- function(phi = NULL, theta = NULL, n, innov.gen = rnorm,
+                     burnin = NA, ...){
+
+        # 1. Check inputs:
+        # phi
+        if(!is.numeric(phi) & !is.null(phi)) stop("phi has to be numeric vector or NULL!")
+        # theta
+        if(!is.numeric(theta) & !is.null(theta)) stop("phi has to be numeric vector or NULL!")
+        # n
+        if(!is.numeric(n)) stop("n must be an integer!")
+        if(n%%1!=0) stop("n must be an integer!")
+        if(n<=0) stop("n must be strictly positive!")
+
+        # Order of Process:
+        p <- length(phi)
+        q <- length(theta)
+
+        # Length of burnin-period and initial innovations:
+        l_max <- max(length(phi), length(theta))
+        if(is.na(burnin)) burnin <- 10*l_max
+        if(!is.numeric(burnin)) stop("burnin must be integer!")
+        if(burnin%%1!=0) stop("burnin must be an integer!")
+        if(burnin < p+q) stop("burnin period must be at least as long as p+q!")
+
+
+        # 2. Check for stationarity of the AR part:
+        if(!is.null(phi)){
+        if( any( Mod(polyroot(c(1,-phi))) <= 1)) stop("series is not stationary!")}
+
+
+        # 3. Simulation:
+
+        # Initialize:
+        len <- burnin + n
+        series <- double(len)
+        # Innovations:
+        e <- innov.gen(len, ...)
+
+        for(t in 1:len){
+
+                # Starting values as random innovations
+                if(t <= l_max) {series[t] <- e[t]
+                } else{
+                        temp <- 0
+
+                        # AR process
+                        if(!is.null(phi)){
+                        for(i in 1:p) temp <- temp + phi[i]*series[t-i]}
+
+                        # MA process
+                        if(!is.null(theta)){
+                        for(j in 1:q) temp <- temp + theta[j]*e[t-j]}
+
+                        # Adding random innovation
+                        series[t] <- temp + e[t]
+
+                }
+        }
+
+        series
+}
+
+
+
