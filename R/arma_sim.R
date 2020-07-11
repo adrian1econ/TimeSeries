@@ -19,7 +19,7 @@ test_innovation <- function(len){
 #'   to be discarded, so that the characteristics of final series do not depend
 #'   on the initial values.
 #' @return Object of class "arma" containing the simulated arma series, the
-#'   innovation series and all the specified parameters.
+#'   innovation series and the specified parameters.
 #' @examples
 #' arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100)
 #' @export

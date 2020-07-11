@@ -30,7 +30,7 @@ on the initial values.}
 }
 \value{
 Object of class "arma" containing the simulated arma series, the
-innovation series and all the specified parameters.
+innovation series and the specified parameters.
 }
 \description{
 Description
