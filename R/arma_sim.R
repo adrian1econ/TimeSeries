@@ -12,6 +12,7 @@ test_innovation <- function(len){
 #'
 #' @param phi,theta A numeric vector specifying the AR(MA)-Coefficients of an
 #'   ARMA(p,q) model.
+#' @param mu A numeric vector specifying the mean of the ARMA(p,q)-Series. Default is zero mean.
 #' @param n An integer specifying the length of the resulting time series.
 #' @param innov.gen A function from which the random innovations are drawn.
 #' @param burnin An integer specifying the number of datapoints that are going
@@ -20,10 +21,9 @@ test_innovation <- function(len){
 #' @return Object of class "arma" containing the simulated arma series, the
 #'   innovation series and all the specified parameters.
 #' @examples
-#' add(1, 1)
-#' add(10, 1)
+#' arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100)
 #' @export
-arma_sim <- function(phi = NULL, theta = NULL, n, innov.gen = rnorm,
+arma_sim <- function(phi = NULL, theta = NULL, mu = 0, n, innov.gen = rnorm,
                      burnin = NA, ...){
 
         # 1. Check inputs:
@@ -82,8 +82,19 @@ arma_sim <- function(phi = NULL, theta = NULL, n, innov.gen = rnorm,
                 }
         }
 
-        series
+        # Slice non-burnin period
+        arma <- series[-c(1:burnin)]
+        innov <- e[-c(1:burnin)]
+
+        # Add mu to the series
+        arma <- arma + mu
+
+        # 4.
+        output <- list(arma=arma,
+                       innov=innov,
+                       phi=phi,
+                       theta=theta,
+                       burnin=burnin)
+
+        structure(output, class="arma")
 }
-
-
-

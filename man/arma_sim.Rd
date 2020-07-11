@@ -4,11 +4,21 @@
 \alias{arma_sim}
 \title{Simulate ARMA-Process}
 \usage{
-arma_sim(phi = NULL, theta = NULL, n, innov.gen = rnorm, burnin = NA, ...)
+arma_sim(
+  phi = NULL,
+  theta = NULL,
+  mu = 0,
+  n,
+  innov.gen = rnorm,
+  burnin = NA,
+  ...
+)
 }
 \arguments{
 \item{phi, theta}{A numeric vector specifying the AR(MA)-Coefficients of an
 ARMA(p,q) model.}
+
+\item{mu}{A numeric vector specifying the mean of the ARMA(p,q)-Series. Default is zero mean.}
 
 \item{n}{An integer specifying the length of the resulting time series.}
 
@@ -29,6 +39,5 @@ Description
 Details
 }
 \examples{
-add(1, 1)
-add(10, 1)
+arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100)
 }
