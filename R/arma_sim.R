@@ -1,9 +1,3 @@
-test_innovation <- function(len){
-        c(1, rep(0,len-1))
-}
-
-
-
 #' Simulate ARMA-Process
 #'
 #' Description

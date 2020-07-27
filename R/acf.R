@@ -15,7 +15,7 @@ acf <- function(ts, lag.max=NA){
 
         # 1. Check inputs:
         # ts
-        if( all(!is.numeric(ts),!(class(ts)=="arma")) ) stop("x must be numeric vector or object of class arma!")
+        if( all(!is.numeric(ts),!(class(ts)=="arma")) ) stop("ts must be numeric vector or object of class arma!")
         if(is.numeric(ts)) x <- ts
         if(class(ts)=="arma") x <- ts$arma
 
