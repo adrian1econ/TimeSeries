@@ -21,5 +21,5 @@ Description
 Details
 }
 \examples{
-DL(arma_sim(phi = c(0.8,-0.3),n = 100,burnin = 1000))
+DL(arma_sim(phi = c(0.8,-0.3),n = 1000,burnin = 1000))
 }

@@ -24,9 +24,11 @@ arma_sim <- function(phi = NULL, theta = NULL, mu = 0, n, innov.gen = rnorm,
         # phi
         if(!is.numeric(phi) & !is.null(phi)) stop("phi has to be numeric vector or NULL!")
         # theta
-        if(!is.numeric(theta) & !is.null(theta)) stop("phi has to be numeric vector or NULL!")
+        if(!is.numeric(theta) & !is.null(theta)) stop("theta has to be numeric vector or NULL!")
         # n
+        if(missing(n)) stop("n must be an integer!")
         if(!is.numeric(n)) stop("n must be an integer!")
+        if(!length(n)==1) stop("n must be an integer!")
         if(n%%1!=0) stop("n must be an integer!")
         if(n<=0) stop("n must be strictly positive!")
 
@@ -36,15 +38,18 @@ arma_sim <- function(phi = NULL, theta = NULL, mu = 0, n, innov.gen = rnorm,
 
         # Length of burnin-period and initial innovations:
         l_max <- max(length(phi), length(theta))
+        if(is.null(burnin)) stop("burnin must be an integer!")
         if(is.na(burnin)) burnin <- 10*l_max
-        if(!is.numeric(burnin)) stop("burnin must be integer!")
+        if(!is.numeric(burnin)) stop("burnin must be an integer!")
         if(burnin%%1!=0) stop("burnin must be an integer!")
-        if(burnin < p+q) stop("burnin period must be at least as long as p+q!")
+        if(burnin < 0) stop("burnin must be an positive!")
+        if(!length(burnin)==1) stop("burnin must be an integer!")
+        if(burnin < max(p,q)) stop("burnin period must be at least as long as max(p,q)")
 
 
         # 2. Check for stationarity of the AR part:
         if(!is.null(phi)){
-        if( any( Mod(polyroot(c(1,-phi))) <= 1)) stop("series is not stationary!")}
+        if( any( Mod(polyroot(c(1,-phi))) <= 1)) warning("series is not stationary!")}
 
 
         # 3. Simulation:
