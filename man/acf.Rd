@@ -4,11 +4,11 @@
 \alias{acf}
 \title{Autocovariance Function Estimation}
 \usage{
-acf(ts, lag.max = NA)
+acf(ts, lag.max = NULL)
 }
 \arguments{
-\item{ts}{A numeric vector containing a time series or an object of class "arma"
-ARMA(p,q) model.}
+\item{ts}{A numeric vector containing a time series or an object of class
+"arma" ARMA(p,q) model.}
 
 \item{lag.max}{An integer specifying the maximum lag, for which the a}
 }
@@ -16,11 +16,12 @@ ARMA(p,q) model.}
 A numeric vector containing the sample autocovariance function.
 }
 \description{
-Description
+The function acf computes estimates of the
+autocovariance function.
 }
 \details{
 Details
 }
 \examples{
-arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100)
+acf(arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100))
 }

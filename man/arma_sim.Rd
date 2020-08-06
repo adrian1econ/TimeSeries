@@ -10,26 +10,29 @@ arma_sim(
   mu = 0,
   n,
   innov.gen = rnorm,
-  burnin = NA,
+  innov = NULL,
+  burnin = NULL,
   ...
 )
 }
 \arguments{
-\item{phi, theta}{A numeric vector specifying the AR(MA)-Coefficients of an
+\item{phi, theta}{a numeric vector specifying the AR(MA)-Coefficients of an
 ARMA(p,q) model.}
 
-\item{mu}{A numeric vector specifying the mean of the ARMA(p,q)-Series. Default is zero mean.}
+\item{mu}{a numeric vector specifying the mean of the ARMA(p,q)-Series. Default is zero mean.}
 
-\item{n}{An integer specifying the length of the resulting time series.}
+\item{n}{an integer specifying the length of the resulting time series.}
 
-\item{innov.gen}{A function from which the random innovations are drawn.}
+\item{innov.gen}{a function from which the random innovations are drawn.}
 
-\item{burnin}{An integer specifying the number of datapoints that are going
+\item{innov}{an optional time series of innovations. If not provided, rand.gen is used}
+
+\item{burnin}{an integer specifying the number of datapoints that are going
 to be discarded, so that the characteristics of final series do not depend
 on the initial values.}
 }
 \value{
-Object of class "arma" containing the simulated arma series, the
+object of class "arma" containing the simulated arma series, the
 innovation series and the specified parameters.
 }
 \description{
