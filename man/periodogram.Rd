@@ -4,17 +4,23 @@
 \alias{periodogram}
 \title{The Periodogram}
 \usage{
-periodogram(x)
+periodogram(ts)
+}
+\arguments{
+\item{ts}{A numeric vector or a structur of class arma which contains the
+time series that should be analysed.}
 }
 \value{
-
+A vector which contains the estimated power spectral density of the signal \code{ts}.
 }
 \description{
-Description
-}
-\details{
-Details
+The periodogram estimates the power spectral density of a signal (e.g. a time
+series or a series of observations). Note that the periodogram is not a
+consistent estimator.
 }
 \examples{
+n<- 1:42
+x <- rnorm(1:42) + 2*sin(2*pi*n)
+periodogram(x)
 
 }
