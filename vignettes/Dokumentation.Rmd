@@ -1,0 +1,156 @@
+---
+title: "Dokumentation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dokumentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Einleitung
+
+Diese Vignette demonstriert die Fähigkeiten des Pakets *TimeSeries*, welches folgende Funktionen enthält:
+
+* Simulation eines ARMA(p,q)-Prozesses (*arma_sim*)
+* Berechnung der Autokovarianzfunktion einer Zeitreihe (*acf*)
+* Implementierung des Durbin-Levinson Algorithmus (*DL*)
+
+Dafür wird als erstes das Paket *TimeSeries* geladen.
+```{r setup, message=F, warning=F}
+library(TimeSeries)
+```
+        
+## Simulation eines ARMA-Prozesses
+Mithilfe der Funktion *arma_sim* können ARMA-Prozesse simuliert werden.
+ARMA-Prozesse sind allgemein eine Mischung aus autoregressiven (AR)- und moving average (MA)-Prozessen. Die so Zeitreihen sind auch die Grundlage der Simulationsstudie, in der weitere Funktionen des Pakets getestet werden.
+Im folgenden wird eine ARMA-Zeitreihe  Die Funktion *arma_sim* erzeugt eine Zeitreihe, welche folgende Formel aus Brookwell et al. (2002) erfüllt:
+$$X_t-\phi_1X_{t-1}-...-\phi_pX_{t-p}=Z_t+\theta_1Z_{t-1}+...+\theta_qZ_{t-q}.$$
+Hier sind die $\phi's$ ($\theta's$), die Paramter welche den autoregressiven (moving average) Prozess charakterisieren. Die $Z's$ sind random Innovations. Als Default sind diese Standardnormalverteilt.  In der Funktion *arma_sim* können diese Paramter in den gleichnamigen Inputvariablen jeweils als numerische Vektoren angegeben werden. Es muss mindestens eine der beiden Variablen (*phi*, *theta*) spezifiziert werden. Zum zweiten muss die Länge der resultierenden Zeitreihe in der Inputvariable (*n*) gesetzt werden.
+
+Der folgende Code simuliert 100 Beobachtungen eines ARMA(2,2)-Prozesses:
+```{r}
+set.seed(12345)
+sim_obj <- arma_sim(phi = c(0.5,-0.2), 
+                    theta = c(0.1,-0.3), 
+                    n = 100)
+str(sim_obj)
+```
+Hier ist auch die Struktur des Outputs zu erkennen. Es wird ein Objekt der Klasse "arma" ausgegeben, welches auf einer Liste beruht. Unter *innov* sind die random Innavtions der jeweiligen Periode gespeichert. Auch die Inputparamter des ARMA-Prozesse können abgerufen werden. Damit die reultierende Zeitreihe weniger von den Startwerten abhängt, kann eine "Burn-in" Periode bestimmt werden in der sich der Prozess einpendeln kann.
+Die Länge dieser Periode ist in dem Objekt *burnin* im Output abgespeichert und kann in der gleichnmaigen Inputvariable spzifiziert werden.
+
+Der folgende Plot zeigt, die oben simulierte Zeitreihe:
+```{r fig1, fig.width = 7, fig.asp = .3}
+library(ggplot2)
+library(tibble)
+tbl_sim <- tibble(arma=sim_obj$arma, t=seq_along(sim_obj$arma))
+plot_sim <- ggplot(tbl_sim, aes(x=t,y=arma)) +
+                geom_line()
+plot_sim
+```
+Man kann in diesem Plot deutlich erkennen, dass die Funktion *arma_sim* als Standard Zeitreihen mit einem Mittelwert von Null erzeugt. Ein anderer Mittelwert kann mit der Variable *mu* spezifiziert werden.
+Im folgenden ist zu erkennen, dass sich der Mittelwert nach der Eingabe von *mu* verändert.
+
+```{r fig2, fig.width = 7, fig.asp = .3}
+set.seed(12345)
+sim_obj2 <- arma_sim(phi = c(0.5,-0.2), 
+                     theta = c(0.1,-0.3), 
+                     mu = 1, 
+                     n = 100)
+## Mittelwert (mu) auf 1 gesetzt
+
+tbl_sim2 <- tibble(arma=sim_obj2$arma, t=seq_along(sim_obj2$arma))
+plot_sim2 <- ggplot(tbl_sim2, aes(x=t,y=arma)) +
+                geom_line()
+plot_sim2
+```
+
+Als letztes möglich in der Funktion die Verteilung der Innovations bzw. auch die Innovations an sich zu spezifizieren. Durch die Inputvariable *innov* kann eine eigene Reihe von Innovations übergeben werden. Die zweite Möglichkeit ist es die Verteilung der Innovations in *innov.gen* zu spezifizieren, und die Verteilungsparameter in *...* zu übergeben.
+Im folgenden ist ein Plot mit höherer Standardabweichung der Innovations zu sehen.
+
+```{r fig3, fig.width = 7, fig.asp = .3}
+set.seed(12345)
+sim_obj3 <- arma_sim(phi = c(0.5,-0.2), 
+                     innov.gen = rnorm,  
+                     theta = c(0.1,-0.3), 
+                     mu = 1, 
+                     n = 100, 
+                     sd=2)
+
+tbl_sim3 <- tibble(arma=sim_obj3$arma, t=seq_along(sim_obj3$arma))
+plot_sim3 <- ggplot(tbl_sim3, aes(x=t,y=arma)) +
+                geom_line()
+plot_sim3
+```
+
+## Autokovarianz-Funktion
+
+Die Autokovarianz-Funktion gibt die Kovarianz der Realisationen eines Prozesses mit sich selbst zu einem früheren Zeitpunkt. Damit ist sie ein erster Anhaltspunkt zu den zeitlichen Abhängigkeiten des Prozesses.
+Die Autokovarianz-Funktion ist nach Brookwell et al. (2002) für den Lag $h$ folgendermaßen definiert:
+
+$$\gamma_x(h)=Cov(X_{t+h},X_t) $$
+Die Funktion *acf* gibt standardmäßig die Autokovarianzen für den Lag $0$ bis Lag $n-1$ zurück. In der Inputvaribale lag.max kann die Anzahl der zurückgegebenen Autokovarianzen begrenzt werden. Die Funktion *acf* extrahiert ohne weiter Eingaben die Zeitreihe aus simulierten *arma*-Objekten.
+
+```{r fig4, fig.width = 7, fig.asp = .3}
+set.seed(123)
+
+ar_obj <- arma_sim(phi = c(0.9), n = 100)
+ar_acf <- acf(ar_obj, lag.max = 20)
+
+ma_obj <- arma_sim(theta = c(0.5), n = 100)
+ma_acf <- acf(ma_obj, lag.max = 20)
+
+ar_plot <- ggplot(tibble(ACF=ar_acf, Lag=seq_along(ar_acf)), aes(x=Lag, y=ACF)) +
+                geom_bar(stat="identity") + 
+                ggtitle("AR(1)")
+
+ma_plot <- ggplot(tibble(ACF=ma_acf, Lag=seq_along(ma_acf)), aes(x=Lag, y=ACF)) +
+                geom_bar(stat="identity") + 
+                ggtitle("MA(1)")
+ar_plot
+ma_plot
+```
+Anhand der beiden Autokovarianz-Funktionen kann man eine erste Aussage über die Art des Prozesses treffen. Der erste Plot zeigt eine langsam abnehmende Autokovarianz-Funktion, was auf einen AR-Prozess hinweist. Der zweite Plot zeigt eine abprupt abnehemnde Autokovarianz-Funktion, was her auf einen MA-Prozess schließen lässt.
+
+
+## Durbin-Levinson Algorithmus
+
+Der Durbin-Levinson Algortihmus kann zur Vorhersage von Zeitreihen verwendet werden.
+Nach Brookwell et al. (2002) kann der Algorithmus verwendet werden um die $\phi's$ in folgender Formel zu schätzen:
+$$ P_n=X_{n+1}=\phi_{n1}X_n+...+\phi_{nn}X_1. $$
+Das heißt der vorgesagte Wert wird als lineare Kombination aller vergangenen Realisiationen der Zeitreihe ausgedrückt.
+Die $\phi's$ werden rekursiv durch folgende Formeln bestimmt:
+$$ \phi_{nn}=\Big[ \gamma(n)-\sum \limits_{j=1}^{n-1}\phi_{n-1,j}\gamma(n-j)\Big]v_{n-1}^{-1}, $$
+$$\begin{bmatrix}\phi_{n1} \\ \vdots \\\phi_{n,n-1}  \end{bmatrix}=
+\begin{bmatrix}\phi_{n-1,1} \\ \vdots \\\phi_{n-1,n-1}  \end{bmatrix}-
+\phi_{nn}
+\begin{bmatrix}\phi_{n-1,n-1} \\ \vdots \\\phi_{n-1,1}  \end{bmatrix},$$
+und
+$$v_n=v_{n-1}[1-\phi_{nn}^2] $$
+Die Startwerte sind $\phi_{11}=\gamma(1)/\gamma(0)$ und $v_0=\gamma(0)$.
+
+Die Funktion *DL* implementiert den Durbin-Levinson Algorithmus und gibt die geschätzten $\phi's$ zurück. Diese können dann zur Vorhersage verwendet werden. Standardmäßig führt die Funktion die maximale Anzahl von Rekursionen durch (n-1), jedoch kann diese in der Inputvariable *p* reduziert werden.
+Folgender Code zeigt die Anwendung auf einen AR-Prozess, für welche der Algorithmus relativ gut funktioniert. Es wird beim simulieren eine lange Burn-in Periode gewählt, um zu garantieren, dass der Prozess wenig von den zufälligen Startwerten abhängt.
+
+```{r}
+set.seed(1234)
+ar_obj <- arma_sim(phi = c(0.6,-0.2), n = 200, burnin = 2000)
+dl <- DL(ar_obj)
+dl[1:10]
+```
+Der Output zeigt die ersten 10 geschätzten $\phi's$. Diese spiegeln relativ genau die Inputparameter wieder. Somit wäre auch eine dementsprechend gute Vorhersage für den nächsten Zeitpunkt möglich.
+Die Vorhersage wird durch das Multiplizieren der $\phi's$ mit der Zeitreihe und anschließendes Summieren bestimmt.
+
+```{r}
+forecast <- sum(ar_obj$arma*dl)
+forecast
+```
+
+## Quellen
+Brockwell, Peter J., Richard A. Davis, and Matthew V. Calder. Introduction to time series and forecasting. Vol. 2. New York: springer, 2002.
