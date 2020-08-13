@@ -19,6 +19,7 @@ acf <- function(ts, lag.max=NULL){
         if( all(!is.numeric(ts),!(class(ts)=="arma")) ) stop("ts must be numeric vector or object of class arma!")
         if(is.numeric(ts)) x <- ts
         if(class(ts)=="arma") x <- ts$arma
+        if(length(x)<=1) stop("length of ts must be greater than 1")
 
         # lag.max
         n <- length(x)
@@ -35,6 +36,8 @@ acf <- function(ts, lag.max=NULL){
         # 2. Calculation of Autocovariance Coefficients
         # Sample mean
         smpl_mean <- 1/n*sum(x)
+        # lag.max=0 --> return variance
+        if(lag.max==0){return( mean((x-smpl_mean)^2) )}
         # Lag matrix
         lag_mat <- cbind(x, sapply(1:lag.max, function(k) c(x[-c(1:k)], rep(NA, times=k))))
         # Calculation of autocovariance function
