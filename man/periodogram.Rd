@@ -11,12 +11,11 @@ periodogram(ts)
 time series that should be analysed.}
 }
 \value{
-A vector which contains the estimated power spectral density of the signal \code{ts}.
+A vector which contains the estimated power spectral density of the signal or time series \code{ts}.
 }
 \description{
 The periodogram estimates the power spectral density of a signal (e.g. a time
-series or a series of observations). Note that the periodogram is not a
-consistent estimator.
+series or a series of observations). Note that the periodogram is not a consistent estimator.
 }
 \examples{
 n<- 1:42

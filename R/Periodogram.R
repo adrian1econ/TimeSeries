@@ -1,12 +1,11 @@
 #' The Periodogram
 #'
 #' The periodogram estimates the power spectral density of a signal (e.g. a time
-#' series or a series of observations). Note that the periodogram is not a
-#' consistent estimator.
+#' series or a series of observations). Note that the periodogram is not a consistent estimator.
 #' 
 #' @param ts A numeric vector or a structur of class arma which contains the
 #'   time series that should be analysed.
-#' @return A vector which contains the estimated power spectral density of the signal \code{ts}.
+#' @return A vector which contains the estimated power spectral density of the signal or time series \code{ts}.
 #' @examples
 #' n<- 1:42
 #' x <- rnorm(1:42) + 2*sin(2*pi*n)
