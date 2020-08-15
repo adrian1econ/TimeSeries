@@ -1,3 +1,15 @@
+#' Innovation Algorithm
+#'
+#'Description
+#The Innovation Algorithm is one step Prediction 
+#'Details
+#'
+#' @param ts A numeric vector containing a time series or an object of class "arma".
+#' @param lag.ma Number of recursions to determined Prediction.
+#' @return Numeric vector containing the Prediction determined by the Innovation algorithm.
+#' @examples
+#' Innovation(arma_sim(theta = c(0.8,-0.3),n = 1000,burnin = 1000))
+#' @export
 innovation <- function(ts,lag.max=NA)
 {
   #1 Check Inputs:
@@ -18,7 +30,7 @@ innovation <- function(ts,lag.max=NA)
   
   theta <- matrix(rep(0,(lag.max)*(lag.max)),nrow = lag.max)
   #acf vec
-  acf_vec <- acf(ts)
+  acf_vec <- acf(ts,lag.max = lag.max)
   #mean squared errors v
   v <- acf_vec[1]
   if (acf_vec[1]==0) stop("Variance cant be zero")
@@ -53,6 +65,5 @@ innovation <- function(ts,lag.max=NA)
   {
     x_next[i+1] <- next_x_sum(theta,x,x_next,i)
   }
-return(x_next)
+return(x_next,v)
 }
-d <- innovation(1:4)
