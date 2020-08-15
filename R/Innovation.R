@@ -1,3 +1,15 @@
+#' Innovation Algorithm
+#'
+#'Description
+#The Innovation Algorithm is one step Prediction 
+#'Details
+#'
+#' @param ts A numeric vector containing a time series or an object of class "arma".
+#' @param lag.ma Number of recursions to determined Prediction.
+#' @return Numeric vector containing the Prediction determined by the Innovation algorithm.
+#' @examples
+#' innovation(arma_sim(theta = c(0.8,-0.3),n = 1000,burnin = 1000))
+#' @export
 innovation <- function(ts,lag.max=NA)
 {
   #1 Check Inputs:
@@ -18,7 +30,7 @@ innovation <- function(ts,lag.max=NA)
   
   theta <- matrix(rep(0,(lag.max)*(lag.max)),nrow = lag.max)
   #acf vec
-  acf_vec <- acf(ts)
+  acf_vec <- acf(ts,lag.max = lag.max)
   #mean squared errors v
   v <- acf_vec[1]
   if (acf_vec[1]==0) stop("Variance cant be zero")
@@ -32,12 +44,6 @@ innovation <- function(ts,lag.max=NA)
     v_ <- v[1:k]
     sum(v_*theta_k*theta_i)
   }
-  next_x_sum <- function(theta,x,x_next,i)
-  {
-    theta_ <- theta[i,i:1]
-    x_cache <- x[1:i]
-    sum(theta_*(x_cache-x_next))
-  }
  #Thetas calculate
   for (i in seq(lag.max))
   { 
@@ -47,12 +53,6 @@ innovation <- function(ts,lag.max=NA)
     }
     v[i+1] <- acf_vec[1]-thetasum(theta,i,i,v)
   }
-  #Calculate next step x_next
-  x_next <- 0 # First Prediction
-  for (i in seq(lag.max))
-  {
-    x_next[i+1] <- next_x_sum(theta,x,x_next,i)
-  }
-return(x_next)
-}
-d <- innovation(1:4)
+
+list("theta"=theta,"mean_sqd_error"=v[2:length(v)])
+}  
