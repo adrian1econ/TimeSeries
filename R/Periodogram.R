@@ -10,7 +10,6 @@
 #' n<- 1:42
 #' x <- rnorm(1:42) + 2*sin(2*pi*n)
 #' periodogram(x)
-#'
 #' @export
 periodogram <- function(ts) {
   
