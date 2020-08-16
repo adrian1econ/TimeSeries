@@ -60,6 +60,6 @@ innovation_prediction <- function(ts,steps=1,lag.max=NA)
   x_next_ <- x_next[lag.max:1]
   x_prediction <- sum(theta_*(x_-x_next_))
   
-  list("x_prediction"=x_prediction)
+  x_prediction
 }
  
