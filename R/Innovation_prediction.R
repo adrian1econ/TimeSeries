@@ -20,13 +20,13 @@ innovation_prediction <- function(ts,steps=1,lag.max=NA)
   if( all(!is.numeric(ts),!(class(ts)=="arma")) ) stop("ts must be numeric vector or object of class arma!")
   if(is.numeric(ts)) x <- ts
   if(class(ts)=="arma") x <- ts$arma
-  if(length(ts)<4) stop("length ts must be greater than 4")
+  if(length(x)<=2) stop("length ts must be greater than 2")
   #steps
   if(!is.numeric(steps)) stop("steps must a be positiv integer!")
   if(length(steps)!=1) stop("length of steps must equal 1")
   if(steps%%1!=0) stop("steps must a be positiv integer")
   if(steps < 1) stop("steps must a be positiv integer")
-  if(steps>(length(x)-2)) stop("steps must be smaller than length(ts)")
+  if(steps>(length(x)-1)) stop("steps must be smaller than length(ts)-1")
   #lag.max
   # lag.max Check
   if( all(!is.numeric(lag.max),!is.na(lag.max)) ) stop("lag.max must be integer or NA!")
@@ -57,10 +57,9 @@ innovation_prediction <- function(ts,steps=1,lag.max=NA)
   #Calculate lag.max+steps+1 Element prediction
   theta_ <- theta[lag.max+steps-1,steps:(lag.max+steps-1)]
   x_ <-x[(lag.max+1):2]
-  x_next_ <- x_next[(lag.max+1):2]
+  x_next_ <- x_next[lag.max:1]
   x_prediction <- sum(theta_*(x_-x_next_))
   
   list("x_prediction"=x_prediction)
-  c(x_next)
 }
  
