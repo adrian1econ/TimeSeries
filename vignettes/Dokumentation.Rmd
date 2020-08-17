@@ -91,7 +91,7 @@ plot_sim3
 
 ## Autokovarianz-Funktion
 
-Die Autokovarianz-Funktion gibt die Kovarianz der Realisationen eines Prozesses mit sich selbst zu einem früheren Zeitpunkt. Damit ist sie ein erster Anhaltspunkt zu den zeitlichen Abhängigkeiten des Prozesses.
+Die Autokovarianz-Funktion gibt die Kovarianz der Realisationen eines Prozesses mit sich selbst zu früheren Zeitpunkten zurück. Damit ist sie ein erster Anhaltspunkt zu den zeitlichen Abhängigkeiten des Prozesses.
 Die Autokovarianz-Funktion ist nach Brookwell et al. (2002) für den Lag $h$ folgendermaßen definiert:
 
 $$\gamma_x(h)=Cov(X_{t+h},X_t) $$
@@ -121,9 +121,9 @@ Anhand der beiden Autokovarianz-Funktionen kann man eine erste Aussage über die
 
 ## Durbin-Levinson Algorithmus
 
-Der Durbin-Levinson Algortihmus kann zur Vorhersage von Zeitreihen verwendet werden.
+Der Durbin-Levinson Algorithmus kann zur Vorhersage von Zeitreihen verwendet werden.
 Nach Brookwell et al. (2002) kann der Algorithmus verwendet werden um die $\phi's$ in folgender Formel zu schätzen:
-$$ P_n=X_{n+1}=\phi_{n1}X_n+...+\phi_{nn}X_1. $$
+$$ P_nX_{n+1}=\phi_{n1}X_n+...+\phi_{nn}X_1. $$
 Das heißt der vorgesagte Wert wird als lineare Kombination aller vergangenen Realisiationen der Zeitreihe ausgedrückt.
 Die $\phi's$ werden rekursiv durch folgende Formeln bestimmt:
 $$ \phi_{nn}=\Big[ \gamma(n)-\sum \limits_{j=1}^{n-1}\phi_{n-1,j}\gamma(n-j)\Big]v_{n-1}^{-1}, $$
