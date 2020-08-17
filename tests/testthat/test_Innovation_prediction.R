@@ -1,12 +1,19 @@
 test_that("Input test work", {
+  #ts testing
   expect_error(innovation_prediction(c("a","b")), "ts must be numeric vector or object of class arma!")
   expect_error(innovation_prediction(NA), "ts must be numeric vector or object of class arma!")
   expect_error(innovation_prediction(list(2,3,4)), "ts must be numeric vector or object of class arma!")
   expect_error(innovation_prediction(c(1,3)), "length ts must be greater than 2")
+  #lag.max testing
   expect_error(innovation_prediction(c(1,2,6,3,5,3,2), lag.max = 1.1), "lag.max must be integer or NA!")
   expect_error(innovation_prediction(c(1,2,6,3,5,3,2), lag.max = c(1,1)), "length of lag.max must equal 1")
   expect_error(innovation_prediction(c(1,2,6,3,5,3,2), lag.max ="a"), "lag.max must be integer or NA!")
-})
+  expect_error(innovation_prediction(c(1,2,6,3,5,3,2), lag.max = 0), "lag.max musst be 0 between length of ts")
+  expect_error(innovation_prediction(c(1,2,6,3,5,3,2), lag.max = 7), "lag.max musst be 0 between length of ts")
+  # steps
+  expect_error(innovation_prediction(c(1,2,6,3,5,3,2), steps ="a"), "steps must a be positiv integer!")
+  expect_error(innovation_prediction(c(1,2,6,3,5,3,2), steps = 0), "steps must a be positiv integer!")
+  })
 test_that("Innovation_prediction works", {
   #Preparation
   vec <- c(2,0.5,3.5,2.2,6.4,7)
