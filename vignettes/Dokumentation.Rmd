@@ -175,7 +175,7 @@ print(innov[[2]][1:10])
 Man sieht das die $\theta_{.,1}$ nahe an 0.6 sind und die $\thetas_{.,2}$ nahe an -0,2 sind. Die restlichen $\theta's$ sind im Vergleich dazu relativ klein. In der Theorie sollten diese gleich Null sein. Dies schafft diese Implemantion nicht.
 Die Vohersage wird dann durch die *innovation_prediction* getätigt, wobei hier eine Ein-Schritt Vorhersage getätigt wird.
 ```{r}
-innovation_prediction(ma_obj))
+innovation_prediction(ma_obj)
 ```
 ## Innovation Prediction
 Diese Funktion benutzt den Innovation Algorithmus um die Vorhersage für das nächsten (bzw. für das n-te) Wert zu bestimmen. Nach Brockwell sind dies die Algorithmen dazu:
