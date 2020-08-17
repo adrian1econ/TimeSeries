@@ -1,17 +1,18 @@
 #' Innovation Algorithm
 #'
 #'Description
-#'The Innovation Algorithm is Algorithm, which determinate from previous elements and their predictors the predictor of the (n-th) next Element
-#'This Algorithm calculate the Coefficients for that. For MA Process is this a good Predictor. 
+#'The innovation algorithm is algorithm, which determinate thetas and mean squared errors.They are used to predict the next values in the function innovation_prediction.
+#' General the innovation algorithm is good for Ma-processes
+#' 
 #'Details
-#'The Innovation Algorithm is Algorithm, which determinate from previous elements and their predictors the predictor of the (n-th) next Element.
-#'Therefore the Algorithm need Coefficients (Thetas), which are determinate in this Algorithm.
-#'They are determinate with help from the previous Thetas, the ACF-function and mean squared errors (between Predictor and the Elements).
-#'The mean square errors are also calculated in this Algorithm.
+#'The innovation algorithm is algorithm, which determinate from previous elements and their predictors the predictor of the (n-th) next element.
+#'Therefore the algorithm need coefficients (Thetas), which are determinate in this algorithm.
+#'They are determinate with help from the previous Thetas, the ACF-function and mean squared errors (between predictor and the elements).
+#'The mean square errors are also calculated in this algorithm.
 #'
 #' @param ts A numeric vector containing a time series or an object of class "arma".
-#' @param lag.na Number of recursions to determined Prediction.
-#' @return The Matrix with the calculated Thetas, that they are need for the prediction and the mean squared errors between Predictor and the Element of the vector
+#' @param lag.na Number of recursions to determined prediction.
+#' @return A list with the Matrix with the calculated Thetas and a vector with a mean squared error
 #' @examples
 #' innovation(arma_sim(theta = c(0.8,-0.3),n = 1000,burnin = 1000))
 #' @export
