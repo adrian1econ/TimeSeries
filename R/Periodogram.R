@@ -14,7 +14,7 @@
 periodogram <- function(ts) {
   
   # 1. Check Input
-  if( all(!is.numeric(ts),!(class(ts)=="arma")) ) stop("ts must be numeric vector or object of class arma.")
+  if( all(!is.numeric(ts),!(class(ts)=="arma"))) stop("ts must be numeric vector or object of class arma.")
   
   
   # 2. Define coefficients and vectors
