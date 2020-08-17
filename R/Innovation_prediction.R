@@ -58,9 +58,5 @@ innovation_prediction <- function(ts,steps=1,lag.max=NA)
   x_ <-x[(lag.max+steps):(steps+1)]
   x_next_ <- x_next[(lag.max):1]
   x_prediction <- sum(theta_*(x_-x_next_))
-  print(length(theta_))
-  print(length(x_next_))
-  print(length(x_))
-  
   x_prediction
 }
