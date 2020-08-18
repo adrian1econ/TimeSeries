@@ -172,18 +172,21 @@ Folgender Code zeigt die Anwendung auf einen MA-Prozess. Es wird beim Simulieren
 Das Periodogramm einer Zeitreihe $\{x_1,...,x_n\}$ ist eine stichprobenbasierte Funktion, aus der ein nicht-konsistenter Schätzer für die spektrale Leistungsdichtedichte gewonnen werden kann.
 Das Periodogramm einer Zeitreihe $\{x_1,...,x_n\}$ ist definiert als:
 $$
-I_n(\lambda)=n^{-1} \Bigg| \sum \limits_{t=1}^{n}x_{t}e^{-it\lambda} \Bigg| ^2
+I_n(\lambda)=\frac{1}{n} \Bigg| \sum \limits_{t=1}^{n}x_{t}e^{-it\lambda} \Bigg| ^2
 $$
 
 Das Periodogramm folgt der Idee ein Signal in sinusartige Funktionen mit unkorrelierten Koeffizienten zu zerlegen. 
 $$
 x_t=\sum \limits_{j \in F_n}a_j [\cos(\omega_jt) + i \sin(\omega_jt)]
 $$
-mit$\omega_j = 2 \pi j$, den Fourier Frequenzen der Zeitreihe $\{x_1,...,x_n\}$, und $j \in F_n=\{j \in \mathbb{Z} : -\pi < \omega_j \leq \pi \}$. Man beachte, dass $F_n$ n Elemente enthält.
+mit$\omega_j = \frac{2 \pi j}{n}$, den Fourier Frequenzen der Zeitreihe $\{x_1,...,x_n\}$, und $j \in F_n=\{j \in \mathbb{Z} : -\pi < \omega_j \leq \pi \}$. Man beachte, dass $F_n$ n Elemente enthält. Die Folge $\{a_j: j\in F_n\}$ wird als diskrete Fourier-Transformation der Zeitreihe $\{x_1,...,x_n\}$ bezeichnet.
+$$
+a_j=\frac{1}{\sqrt{n}}\sum \limits_{t=1}^{n}x_t e^{-it\omega_j}
+$$
 
 Die Funktion *periodogram* implementiert das Periodogramm und gibt einen numerischen Vektor zurück, welcher die Ausprägungen des Periodogramms an den Stellen $\omega_j$ ($j \in F_n$) enthält.
 $$
-I(\omega_j)=n^{-1} \Bigg| \sum \limits_{t=1}^{n}x_{t}e^{-it\omega_j} \Bigg| ^2
+I(\omega_j)=\frac{1}{n} \Bigg| \sum \limits_{t=1}^{n}x_{t}e^{-it\omega_j} \Bigg| ^2
 $$
 
 Folgender Code beschreibt die Anwendung der Funktion in R:
@@ -196,10 +199,11 @@ ggplot() +
   geom_line(mapping = aes(1:500,periodo[501:1000])) + 
   labs(title="Periodogramm", x="Frequenz", y = "f(w)") 
 ```
-Da für die Fourier-Frequenzen gilt $I(-\omega_j) = I(\omega_j)$, bietet es sich an nur eine Seite des Periodogramms in dern Graphen aufzunehemen.
+Da für die Fourier-Frequenzen gilt $I(-\omega_j) = I(\omega_j)$, bietet es sich an nur eine Seite des Periodogramms in den Graphen aufzunehmen.
 
-Wenn eine Zeitreihe glatt (bzw. verwackelt) erscheint, dann werden die Werte des Periodogramms für niedrige (bzw. hohe) Frequenzen im Verhältnis zu seinen anderen Werten groß sein, und man sagt, dass der Datensatz einen Überschuss an niedrigen (bzw. hohen) Frequenz aufweist.Bei einer rein zufälligen Serie sollten alle Sinus- und Cosinuskurven von gleicher Bedeutung sein, und daher wird das Periodogramm zufällig um eine Konstante variieren.
-Sollte eine Zeitreihe ein starkes sinusartiges Signal für eine Frequenz aufweise, dann wird das Periodogramm eine Spitze bei dieser Frequenz aufweisen.Falls die Zeitreihe ein starkes nicht-sinusbasiertes Signal für eine Frequenz aufweißt, wird das Periodogramm eine Spitze in dieser Frequenz und den Vielfachen aufweißen.
+Wenn eine Zeitreihe glatt (bzw. verwackelt) erscheint, dann werden die Werte des Periodogramms für niedrige (bzw. hohe) Frequenzen im Verhältnis zu seinen anderen Werten groß sein, und man sagt, dass der Datensatz einen Überschuss an niedrigen (bzw. hohen) Frequenz aufweist. Bei einer rein zufälligen Serie sollten alle Sinus- und Cosinuskurven von gleicher Bedeutung sein, und daher wird das Periodogramm zufällig um eine Konstante variieren.
+Sollte eine Zeitreihe ein starkes sinusartiges Signal für eine Frequenz aufweise, dann wird das Periodogramm eine Spitze bei dieser Frequenz aufweisen. Falls die Zeitreihe ein starkes nicht-sinusbasiertes Signal für eine Frequenz aufweist, wird das Periodogramm eine Spitze in dieser Frequenz und den Vielfachen aufweisen.
+
 
 
 ## Literatur
