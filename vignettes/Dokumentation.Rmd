@@ -45,14 +45,13 @@ str(sim_obj)
 Hier ist auch die Struktur des Outputs zu erkennen. Es wird ein Objekt der Klasse "arma" ausgegeben, welches auf einer Liste beruht. Unter *innov* sind die random Innavtions der jeweiligen Periode gespeichert. Auch die Inputparamter des ARMA-Prozesse können abgerufen werden. Damit die reultierende Zeitreihe weniger von den Startwerten abhängt, kann eine "Burn-in" Periode bestimmt werden in der sich der Prozess einpendeln kann.
 Die Länge dieser Periode ist in dem Objekt *burnin* im Output abgespeichert und kann in der gleichnmaigen Inputvariable spzifiziert werden.
 
-Der folgende Plot zeigt, die oben simulierte Zeitreihe:
+Der folgende Plot zeigt, die oben simulierte Zeitreihe und wird mit der Funltion *plot_ts erstellt.
+Diese Funktion ermöglicht einfacht Linienplots von Zeitreihen und funktioniert auch mit "arma"-Objekten.
 ```{r fig1, fig.width = 7, fig.asp = .3}
 library(ggplot2)
 library(tibble)
-tbl_sim <- tibble(arma=sim_obj$arma, t=seq_along(sim_obj$arma))
-plot_sim <- ggplot(tbl_sim, aes(x=t,y=arma)) +
-                geom_line()
-plot_sim
+
+plot_ts(sim_obj)
 ```
 Man kann in diesem Plot deutlich erkennen, dass die Funktion *arma_sim* als Standard Zeitreihen mit einem Mittelwert von Null erzeugt. Ein anderer Mittelwert kann mit der Variable *mu* spezifiziert werden.
 Im folgenden ist zu erkennen, dass sich der Mittelwert nach der Eingabe von *mu* verändert.
@@ -65,10 +64,7 @@ sim_obj2 <- arma_sim(phi = c(0.5,-0.2),
                      n = 100)
 ## Mittelwert (mu) auf 1 gesetzt
 
-tbl_sim2 <- tibble(arma=sim_obj2$arma, t=seq_along(sim_obj2$arma))
-plot_sim2 <- ggplot(tbl_sim2, aes(x=t,y=arma)) +
-                geom_line()
-plot_sim2
+plot_ts(sim_obj2)
 ```
 
 Als letztes möglich in der Funktion die Verteilung der Innovations bzw. auch die Innovations an sich zu spezifizieren. Durch die Inputvariable *innov* kann eine eigene Reihe von Innovations übergeben werden. Die zweite Möglichkeit ist es die Verteilung der Innovations in *innov.gen* zu spezifizieren, und die Verteilungsparameter in *...* zu übergeben.
@@ -83,10 +79,7 @@ sim_obj3 <- arma_sim(phi = c(0.5,-0.2),
                      n = 100, 
                      sd=2)
 
-tbl_sim3 <- tibble(arma=sim_obj3$arma, t=seq_along(sim_obj3$arma))
-plot_sim3 <- ggplot(tbl_sim3, aes(x=t,y=arma)) +
-                geom_line()
-plot_sim3
+plot_ts(sim_obj3)
 ```
 
 ## Autokovarianz-Funktion
@@ -151,6 +144,7 @@ Die Vorhersage wird durch das Multiplizieren der $\phi's$ mit der Zeitreihe und 
 forecast <- sum(ar_obj$arma*dl)
 forecast
 ```
+
 ##Innovation Algorithmus
 Der Innovation Algorithmus kann auch wie der Durbinson Levinson Algorithmus zur Vorhersage von Zeitreihen benutzt werden. Aber im Gegensatz zum DL-Algorithmus ist der Innovation Algorithmus gut zum Simulieren von MA Prozesse und anstatt von AR Prozesse. Der Algorithmus schätzt die $\theta's$ für den folgenden Algorhitmus (nach Brookwell et al. (2002)):
 $$ P_0=0. $$
