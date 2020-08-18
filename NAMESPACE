@@ -3,4 +3,6 @@
 export(DL)
 export(acf)
 export(arma_sim)
+export(innovation)
+export(innovation_prediction)
 export(periodogram)
