@@ -64,7 +64,3 @@ innovation_prediction <- function(ts,steps=1,lag.max=NA)
   
   x_prediction
 }
-<<<<<<< HEAD
- 
-=======
->>>>>>> 76e882c1cf094507ee44a8f232b0b8f31390a979
