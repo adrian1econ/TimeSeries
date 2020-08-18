@@ -14,7 +14,7 @@
 #' @export
 plot_periodogram <- function(pd){
   # 1. Check Inputs
-  if( all(!is.numeric(pd),!(class(pd)=="arma"))) stop("pd must be numeric vector.")
+  if( !is.numeric(pd)) stop("pd must be numeric vector.")
   
   # 2. Prepare the data
   n <- length(pp)
