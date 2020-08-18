@@ -17,7 +17,7 @@ test_that("DL works", {
         v_1 <- gamma[1]*(1-phi_11^2)
         phi_22 <- (gamma[3]-phi_11*gamma[2])/v_1
         phi_21 <- phi_11-phi_22*phi_11
-        res <- c(phi_21,phi_22)
+        res <- c(phi_22, phi_21)
 
         expect_equal(DL(vec), res)
 })
