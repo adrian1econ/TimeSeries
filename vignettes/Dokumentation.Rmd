@@ -154,11 +154,11 @@ forecast
 ##Innovation Algorithmus
 Der Innovation Algorithmus kann auch wie der Durbinson Levinson Algorithmus zur Vorhersage von Zeitreihen benutzt werden. Aber im Gegensatz zum DL-Algorithmus ist der Innovation Algorithmus gut zum Simulieren von MA Prozesse und anstatt von AR Prozesse. Der Algorithmus schätzt die $\theta's$ für den folgenden Algorhitmus (nach Brookwell et al. (2002)):
 $$ P_0=0. $$
-$$  P_{n}=\hat{X}_{n+1}=\sum_{j=1}^{n}\theta_{n,j}(X_{n+1-j}-\hat{X}_{n+1-j}. . $$
+$$  P_{n}=\hat{X}_{n+1}=\sum_{j=1}^{n}\theta_{n,j}(X_{n+1-j}-\hat{X}_{n+1-j}) $$
 Die Vorhersage des $\{X}_{n+1}$ wird durch die $\theta's$ des Innovation Alg, die vorherigen Werte und deren Approximationen bestimmt.
 Zur Bestimmung der $\theta's$ braucht man zusätzlich die mittlere quadratische Abweichung(Simultan Bestimmung im Algorithmus) $v_i= E(X_{i+1}-\hat{X}_{i+1}$
 und die ACF-Funktion der Werte $\kappa$.
-$$\v_0=\kappa(0)$$
+$$v_0=\kappa(0)$$
 $$\theta_{n,n-k}=v_{k}^{-1}\biggl(\kappa(n-k)-\sum_{j=0}^{k-1} \theta_{k,k-j}\theta_{n,n-j}v_j \biggr).\quad 0\ge k\lt n$$
 $$v_n=\kappa(0)-\sum_{j=0}^{n-1}\theta_{n,n-j}^2v_j$$
 
