@@ -13,6 +13,7 @@
 #' plot_periodogram(peri_x)
 #' @export
 plot_periodogram <- function(pd){
+  
   # 1. Check Inputs
   if( !is.numeric(pd)) stop("pd must be numeric vector.")
   
