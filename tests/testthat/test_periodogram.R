@@ -1,6 +1,6 @@
 library(testthat)
 
-test_that("Test of Output", {
+test_that("Test of Errors", {
   expect_error(periodogram(c("a","b")), "ts must be numeric vector or object of class arma.")
   expect_error(periodogram(NA), "ts must be numeric vector or object of class arma.")
   expect_error(periodogram(list(1,2,3)), "ts must be numeric vector or object of class arma.")
