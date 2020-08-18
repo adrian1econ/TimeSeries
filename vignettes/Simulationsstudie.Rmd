@@ -14,8 +14,50 @@ knitr::opts_chunk$set(
 )
 ```
 
-
+In dieser kurzen Simulationsstudie sollen die Möglichkeiten des Paketes weiter veranschaulicht werden. Dazu wird zuerst wieder das Paket *TimeSeries* geladen.
 
 ```{r setup}
 library(TimeSeries)
+library(tibble)
+library(ggplot2)
 ```
+
+In diesem Teil soll die Funktion *acf* getestet werden. Dazu wird ein AR(1)-Prozess mithilfe der Funktion *arma_sim* simuliert. Für diesen Prozess ist es leicht möglich die wahre theoretische Autokovarianz-Funktion zu berechnen.
+Das Modell hat die folgende Form, wobei $\epsilon$ "white noise" ist:
+$$
+X_t=\phi X_{t-1}+\epsilon_t
+
+$$
+Die Varianz $\gamma_0$ berechnet sich folgendermaßen:
+$$
+\gamma(0)=Var(X_t)=Var(\phi X_{t-1}+\epsilon_t)=Var(\phi X_{t-1})+\sigma_{\epsilon}^2=\phi^2 Var(X_{t-1})+\sigma_{\epsilon}^2= \frac{\sigma_{\epsilon}^2}{1-\phi^2}
+$$
+Nun sind auch die weitern Autokovarianzen leicht bestimmbar:
+$$
+\gamma(1)=Cov(X_{t+1},X_t)=Cov(\phi X_t+\epsilon_t,X_t)=Cov(\phi X_t,X_t)+Cov(\epsilon_{t+1},X_t)=\phi Cov(X_t,X_t)+0=\phi \gamma(0)
+$$
+Nun wird die theoretische ACF für eine AR(1)-Prozess mit $\phi=0.8$ und $n=100$ berechnet.
+Später wird die Standardnormalverteilung für den Noise verwendet. Somit gilt $\sigma_{\epsilon}^2=1$.
+```{r}
+gamma_0 <- 1/(1-0.8^2)
+
+true_acf <- numeric(50)
+for(i in 0:49){
+        gamma_i <- gamma_0*0.8^i
+        true_acf[i+1] <- gamma_i
+}
+
+true_acf_plot <- ggplot(tibble(ACF=true_acf, Lag=seq_along(true_acf)), aes(x=Lag, y=ACF)) +
+                geom_bar(stat="identity") + 
+                ggtitle("AR(1)")
+true_acf_plot
+```
+
+Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACF geschätzt.
+
+```{r}
+ar_obj <- arma_sim(phi = 0.8, n=200, burnin=1000)
+acf1 <- acf(ar_obj)
+
+```
+
