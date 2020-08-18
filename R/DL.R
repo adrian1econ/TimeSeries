@@ -38,7 +38,7 @@ DL <- function(ts, p=NULL){
                 phi <- c(phi - phi_nn * phi[(t-1):1], phi_nn)
                 v <- v * (1 - phi_nn^2)
         }
-        phi
+        rev(phi)
 }
 
 

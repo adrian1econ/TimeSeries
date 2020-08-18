@@ -21,6 +21,7 @@ Diese Vignette demonstriert die Fähigkeiten des Pakets *TimeSeries*, welches fo
 * Simulation eines ARMA(p,q)-Prozesses (*arma_sim*)
 * Berechnung der Autokovarianzfunktion einer Zeitreihe (*acf*)
 * Implementierung des Durbin-Levinson Algorithmus (*DL*)
+* Plotten von Zeitreihen (*plot_ts*)
 
 Dafür wird als erstes das Paket *TimeSeries* geladen.
 ```{r setup, message=F, warning=F}
@@ -43,7 +44,7 @@ sim_obj <- arma_sim(phi = c(0.5,-0.2),
 str(sim_obj)
 ```
 Hier ist auch die Struktur des Outputs zu erkennen. Es wird ein Objekt der Klasse "arma" ausgegeben, welches auf einer Liste beruht. Unter *innov* sind die random Innavtions der jeweiligen Periode gespeichert. Auch die Inputparamter des ARMA-Prozesse können abgerufen werden. Damit die reultierende Zeitreihe weniger von den Startwerten abhängt, kann eine "Burn-in" Periode bestimmt werden in der sich der Prozess einpendeln kann.
-Die Länge dieser Periode ist in dem Objekt *burnin* im Output abgespeichert und kann in der gleichnmaigen Inputvariable spzifiziert werden.
+Die Länge dieser Periode ist in dem Objekt *burnin* im Output abgespeichert und kann in der gleichnmaigen Inputvariable spezifiziert werden.
 
 Der folgende Plot zeigt, die oben simulierte Zeitreihe und wird mit der Funltion *plot_ts erstellt.
 Diese Funktion ermöglicht einfacht Linienplots von Zeitreihen und funktioniert auch mit "arma"-Objekten.
