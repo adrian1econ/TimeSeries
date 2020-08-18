@@ -136,13 +136,13 @@ Folgender Code zeigt die Anwendung auf einen AR-Prozess, für welche der Algorit
 set.seed(1234)
 ar_obj <- arma_sim(phi = c(0.6,-0.2), n = 200, burnin = 2000)
 dl <- DL(ar_obj)
-dl[1:10]
+tail(dl,10)
 ```
-Der Output zeigt die ersten 10 geschätzten $\phi's$. Diese spiegeln relativ genau die Inputparameter wieder. Somit wäre auch eine dementsprechend gute Vorhersage für den nächsten Zeitpunkt möglich.
+Der Output zeigt einen Ausschnitt der 200 geschätzten $\phi's$. Die letzten beiden Werte entsprechen in etwa den Inputparametern des AR-Prozesses. Die restlichen $\phi's$ sind nahe null. Somit wäre auch eine dementsprechend gute Vorhersage für den nächsten Zeitpunkt möglich.
 Die Vorhersage wird durch das Multiplizieren der $\phi's$ mit der Zeitreihe und anschließendes Summieren bestimmt.
 
 ```{r}
-forecast <- sum(ar_obj$arma*dl)
+forecast <- sum(ar_obj$arma[-1]*dl)
 forecast
 ```
 
