@@ -22,9 +22,13 @@ library(tibble)
 library(ggplot2)
 ```
 
-## Theoretische ACF eines AR(1)-Prozesses
+
+# Autokovarianz-Funktion
 
 In diesem Teil soll die Funktion *acf* getestet werden. Dazu wird ein AR(1)-Prozess mithilfe der Funktion *arma_sim* simuliert. Für diesen Prozess ist es leicht möglich die wahre theoretische Autokovarianz-Funktion zu berechnen.
+
+## Theoretische ACF eines AR(1)-Prozesses
+
 Das Modell hat die folgende Form, wobei $\epsilon$ "white noise" ist:
 
 $$
@@ -40,8 +44,11 @@ Nun sind auch die weitern Autokovarianzen leicht bestimmbar:
 $$
 \gamma(1)=Cov(X_{t+1},X_t)=Cov(\phi X_t+\epsilon_t,X_t)=Cov(\phi X_t,X_t)+Cov(\epsilon_{t+1},X_t)=\phi Cov(X_t,X_t)+0=\phi \gamma(0)
 $$
+$$
+\gamma(2)=Cov(X_{t+2},X_t)=...=\phi^2 \gamma_0
+$$
 Nun wird die theoretische ACF für eine AR(1)-Prozess mit $\phi=0.8$ und $n=100$ berechnet.
-Später wird die Standardnormalverteilung für den Noise verwendet. Somit gilt $\sigma_{\epsilon}^2=1$.
+Später wird die Standardnormalverteilung für das Rauschen verwendet. Somit gilt $\sigma_{\epsilon}^2=1$.
 ```{r fig1, fig.width = 7, fig.asp = .3}
 gamma_0 <- 1/(1-0.8^2)
 
@@ -59,10 +66,13 @@ true_acf_plot <- ggplot(true_tbl, aes(x=Lag, y=ACF)) +
 true_acf_plot
 ```
 
-Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACFs geschätzt. Es werden Zeitreihen unterschiedlicher Länge erzeugt um zu sehen, ob sich die geschätzten ACFs mit größerer Stichprobengröße dem theoretischen ACF annähern. Es werden lange "burn-in"-Perioden gewählt, damit die Zeitreihe kaum von den zufälligen Startwerten abhängt. Dazu wird eine kleine Funktion erstellt, welche die simulierten ACFs mit dem theoretischen ACF
+## Vergleich von theoretischer mit geschätzter ACF
+
+Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACFs geschätzt. Es werden Zeitreihen unterschiedlicher Länge erzeugt um zu sehen, ob sich die geschätzten ACFs mit größerer Stichprobengröße dem theoretischen ACF annähern. Es werden lange "Burn-in"-Perioden gewählt, damit die Zeitreihe kaum von den zufälligen Startwerten abhängt. Dazu wird eine kleine Funktion erstellt, welche die simulierten ACFs mit dem theoretischen ACF plottet.
 
 ```{r fig2, fig.width = 7, fig.asp = .3}
-set.seed(1234)
+set.seed(12345)
+
 ar_obj_50 <- arma_sim(phi = 0.8, n=50, burnin=1000)
 ar_obj_100 <- arma_sim(phi = 0.8, n=100, burnin=1000)
 ar_obj_200 <- arma_sim(phi = 0.8, n=200, burnin=1000)
@@ -70,16 +80,26 @@ ar_obj_500 <- arma_sim(phi = 0.8, n=500, burnin=1000)
 ar_obj_1000 <- arma_sim(phi = 0.8, n=1000, burnin=1000)
 ar_obj_5000 <- arma_sim(phi = 0.8, n=5000, burnin=1000)
 
+
+ar <- arma_sim(phi = 0.8, n=50, burnin=1000)
+
 acf_plot <- function(ar, ...){
-        ar_acf <- acf(ar)[1:50]
-        acf_plot <- ggplot(tibble(ACF=ar_acf, Lag=seq_along(ar_acf)), aes(x=Lag, y=ACF)) +
-                geom_bar(stat="identity") + 
-                ggtitle(...)
+        sim_tbl <- tibble(ACF=acf(ar)[1:50],Lag=1:50)
+        sim_tbl$Group <- "Simulation"
+        
+        true_tbl <- tibble(ACF=true_acf,Lag=1:50)
+        true_tbl$Group <- "Theoretical"
+        
+        tbl <- rbind(sim_tbl, true_tbl)
+        
+        acf_plot <- ggplot(tbl, aes(x=factor(Lag), y=ACF, fill=factor(Group))) +
+                geom_bar(stat='identity', position='dodge') + 
+                ggtitle(...) +
+                scale_x_discrete(name="Lag", breaks=seq(0,50,5))
 acf_plot
 }
 
-acf_plot(ar_obj_50, "50 obs") +
-        geom_bar(data = true_tbl, mapping = aes(x=Lag, y=ACF))
+acf_plot(ar_obj_50, "50 obs") 
 acf_plot(ar_obj_100, "100 obs")
 acf_plot(ar_obj_200, "200 obs")
 acf_plot(ar_obj_500, "500 obs")
@@ -88,3 +108,72 @@ acf_plot(ar_obj_5000, "5000 obs")
 
 ```
 
+Der obige Vergleich zeigt deutlich, dass sich die geschätzte ACF dem theoretischen ACF des AR(1)-Prozesses bei höherer Beobachtungszahl annähert. Bei niedriger Beobachtungszahl werden die Autokovarianzen für die niedrigen Lags tendenziell unterschätzt und oszillieren für die höhren Lags deutlich um die null. Für die hohen Beobachtungszahlen ab 1000 können nurnoch kleine Unterschiede festgestellt werden. Diese Aussagen beziehen sich auf diese simulierten Daten.
+
+# Durbin-Levinson Algorithmus
+
+In diesem Abschnitt soll untersucht werden ob der Durbin-Levinson Algorithmus gute Vorhersagen für simulierte Daten liefert. Dafür werden zum einen 200 Datenpunkte verscheidener Prozesse simuliert. Nach 50 Beobachtungen wird eine "expanding window out-of-sample" Vorhersage durchgeführt. Also es werden alle Daten bis zum Zeitpunkt *t* verwendet um die Realisation in *t+1* vorherzusagen. Danach wird der Datensatz für die nächste Vorhersage um die Realisation in *t+1* erweitert. Für diese Art von Forecast wird eine Funktion definiert.
+
+```{r}
+dl_forecast <- function(x){
+        
+        x <- x$arma
+        forecast <- numeric(200)
+        
+        for(t in 0:199){
+                if(t<=49){
+                        forecast[t+1] <- NA
+                        next}
+                
+                x_temp <- x[1:t]
+                dl <- DL(x_temp)
+                forecast[t+1] <- sum(dl*x_temp)
+        }
+        forecast
+}
+```
+
+Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), AR(2), AR(3), MA(1), ARMA(1,1).
+
+```{r}
+set.seed(4637)
+
+dl_sim1 <- arma_sim(phi = 0.8, n=200, burnin=1000)
+dl_sim2 <- arma_sim(phi = 0.3, n=200, burnin=1000)
+dl_sim3 <- arma_sim(phi = c(0.7,-0.5), n=200, burnin=1000)
+dl_sim4 <- arma_sim(phi = c(0.9,-0.4,0.2), n=200, burnin=1000)
+dl_sim5 <- arma_sim(theta = 0.5, n=200, burnin=1000)
+dl_sim6 <- arma_sim(phi=0.6, theta = 0.5, n=200, burnin=1000)
+```
+
+Nun werden für alle diese Prozesse die Vorhersagen berechnet.
+
+```{r}
+dl_1 <- dl_forecast(dl_sim1)
+dl_2 <- dl_forecast(dl_sim2)
+dl_3 <- dl_forecast(dl_sim3)
+dl_4 <- dl_forecast(dl_sim4)
+dl_5 <- dl_forecast(dl_sim5)
+dl_6 <- dl_forecast(dl_sim6)
+```
+
+Nun sollen die Ergbnisse visualisiert werden. Dazu wird die simulierte Zeitreihe, die Vorhersagen und die Zeitreihe ohne Rauschen jeweils in einem Plot dargestellt.
+
+```{r fig3, fig.width = 7, fig.asp = .3}
+
+plot_dl_forecasts <- function(series, forecast){
+        tbl <- tibble(Series=series$arma, Forecast=forecast, Lag=1:200)
+        
+        ggplot(tbl, aes(x=Lag)) + 
+                geom_line(aes(y = Series), color = "darkred") + 
+                geom_line(aes(y = Forecast), color="steelblue")
+}
+
+plot_dl_forecasts(dl_sim1, dl_1)
+plot_dl_forecasts(dl_sim2, dl_2)
+plot_dl_forecasts(dl_sim3, dl_3)
+plot_dl_forecasts(dl_sim4, dl_4)
+plot_dl_forecasts(dl_sim5, dl_5)
+plot_dl_forecasts(dl_sim6, dl_6)
+
+```

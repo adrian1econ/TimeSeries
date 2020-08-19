@@ -20,12 +20,12 @@ DL <- function(ts, p=NULL){
 
         # p
         if(!is.null(p) && !(is.integer(p) && p >= 2)) stop("p must be NULL or an integer >= 2")
-        if(is.null(p)) p <- length(x)-1
+        if(is.null(p)) p <- length(x)
 
         # 2. DL-Algorithm
 
         # Autocovarinace function
-        gamma <- acf(x)
+        gamma <- c(acf(x),0) # letztes gamma nach E-Mail auf Null gesetzt
 
         # Starting values
         phi_nn <- gamma[2]/gamma[1]

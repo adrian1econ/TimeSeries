@@ -142,7 +142,7 @@ Der Output zeigt einen Ausschnitt der 200 geschätzten $\phi's$. Die letzten bei
 Die Vorhersage wird durch das Multiplizieren der $\phi's$ mit der Zeitreihe und anschließendes Summieren bestimmt.
 
 ```{r}
-forecast <- sum(ar_obj$arma[-1]*dl)
+forecast <- sum(ar_obj$arma*dl)
 forecast
 ```
 
