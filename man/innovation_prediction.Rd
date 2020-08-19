@@ -9,7 +9,7 @@ innovation_prediction(ts, steps = 1, lag.max = NA)
 \arguments{
 \item{steps}{shows which x will be predicted}
 
-\item{lag.na}{Number of recursions to determined Prediction. (The first step's-values are needed to detect prediction)}
+\item{lag.na}{Number of recursions to determined prediction. (The first step's-values are needed to detect prediction)}
 }
 \value{
 Numeric vector containing the prediction determined by the innovation algorithm.
