@@ -1,15 +1,21 @@
 #' Simulate ARMA-Process
 #'
-#' Description
+#' Simulate from an ARMA model.
 #'
-#' Details
+#' The ARMA model is the description of a stochastic process in terms of two
+#' plynomials, one for the autoregression (AR) and the second for the moving
+#' average (MA). These polynomials can be parametrized in this function, which
+#' gives than a simulated time series with the specified characteristics. For
+#' more detials see the long dokumentation in the vignette "Dokumentation".
 #'
 #' @param phi,theta a numeric vector specifying the AR(MA)-Coefficients of an
 #'   ARMA(p,q) model.
-#' @param mu a numeric vector specifying the mean of the ARMA(p,q)-Series. Default is zero mean.
+#' @param mu a numeric vector specifying the mean of the ARMA(p,q)-Series.
+#'   Default is zero mean.
 #' @param n an integer specifying the length of the resulting time series.
 #' @param innov.gen a function from which the random innovations are drawn.
-#' @param innov an optional time series of innovations. If not provided, rand.gen is used
+#' @param innov an optional time series of innovations. If not provided,
+#'   rand.gen is used
 #' @param burnin an integer specifying the number of datapoints that are going
 #'   to be discarded, so that the characteristics of final series do not depend
 #'   on the initial values.

@@ -1,12 +1,19 @@
 #' Durbin-Levinson Algorithm
 #'
-#' Description
+#' Application of the Durbin-Levinson Algorithm for forecasting time series.
 #'
-#' Details
+#' The Durbin-Levinson Algorithm is a recursive algorithm based on the
+#' autocorrelation function of the input time series. It computes the same
+#' number of AR parameters as is the length of the input series. These estimated
+#' AR parameters can be multiplied with the input series to produce a
+#' one-step-ahead forecast. For more detials see the long dokumentation in the
+#' vignette "Dokumentation".
 #'
-#' @param ts A numeric vector containing a time series or an object of class "arma".
+#' @param ts A numeric vector containing a time series or an object of class
+#'   "arma".
 #' @param p Number of recursions or number of phi's to be determined.
-#' @return Numeric vector containing the phi-Coefficients determined by the Durbin-Levinson algorithm.
+#' @return Numeric vector containing the phi-Coefficients determined by the
+#'   Durbin-Levinson algorithm.
 #' @examples
 #' DL(arma_sim(phi = c(0.8,-0.3),n = 1000,burnin = 1000))
 #' @export
