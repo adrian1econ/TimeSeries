@@ -33,9 +33,9 @@ DL <- function(ts, p=NULL){
         v <- gamma[1]*(1 - phi^2) # v0 = gamma(0) --> v1
 
         # Recursion
-        for(t in 2:p){
-                phi_nn <- (gamma[t+1] - sum(phi * gamma[t:2]))*v^-1
-                phi <- c(phi - phi_nn * phi[(t-1):1], phi_nn)
+        for(n in 2:p){
+                phi_nn <- (gamma[n+1] - sum(phi * gamma[n:2]))*v^-1
+                phi <- c(phi - phi_nn * phi[(n-1):1], phi_nn)
                 v <- v * (1 - phi_nn^2)
         }
         rev(phi)
