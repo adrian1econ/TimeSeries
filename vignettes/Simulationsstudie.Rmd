@@ -233,22 +233,6 @@ Deshalb sollte der Innovation Algorithmus ein guter Schäter sein.
 Beim AR(1) ist der erst ab dem 7ter Spalte betragskleiner als 0,1, weshalb dort $\hat{X}_{n+1}$ von mehr Variabeln stärker abhängt, was das Vorhesagen
 ungenauer macht. 
 
-
-## Periodogramm
-In diesem Abschnitt soll untersucht werden, wie gut das Periodogramm als Spektraldichteschätzer funktioniert. Dafür 
-
-## Spektraldichte eines ARMA(p,q)-Prozesses
-$\{X_t\}$ ein kausaler ARMA Prozess und gilt $\phi(B) X_t = \theta(A)Z_t $ dann ist 
-$$
-f_X(\lambda)= \frac{\sigma^2}{2\pi} \frac{|\theta e^{-i\lambda}|^2}{|\phi e^{-i\lambda}|^2}
-$$
-die Spektraldichte des Prozesses (Brockwell et al 2002: 132).
-
-
-
-
-
-=======
 Beim AR(1) ist der erst ab dem 7ter Spalte Betrags kleiner als 0,1, weshalb dort $\hat{X}_{n+1}$ von mehr Variabeln stärker abhängt, was das Vorhesagen
 ungenauer macht. 
 
@@ -300,4 +284,6 @@ plot_comp_forecasts(dl_sim1,dl_1,in_sim1, "AR(1) - (0.9)")
 plot_comp_forecasts(dl_sim4,dl_4,in_sim4, "MA(1) - (0.5)")
 ```
 Man sieht in der näheren Analyse, dass beide Algorithmen nur die Tedenzen von den jeweiligen Graphen hinbekommen. Dies zeigt wie schwer schon allein bei so einfachen Prozessen die Vorhersage von Werten ist. Man kann erkennen, dass der Innovation Algorithmus besser beim Ma Prozess ist und DL Algorithums beim AR Prozess ist. Aber der unterschied ist überraschend gering
->>>>>>> 6a5966e63a54f6a72ef71c23e0588334e0b7adfd
+
+
+
