@@ -109,7 +109,7 @@ acf_plot(ar_obj_5000, "5000 obs")
 
 ```
 
-Der obige Vergleich zeigt deutlich, dass sich die geschätzte ACF dem theoretischen ACF des AR(1)-Prozesses bei höherer Beobachtungszahl annähert. Bei niedriger Beobachtungszahl werden die Autokovarianzen für die niedrigen Lags tendenziell unterschätzt und oszillieren für die höhren Lags deutlich um die null. Für die hohen Beobachtungszahlen ab 1000 können nurnoch kleine Unterschiede festgestellt werden. Diese Aussagen beziehen sich auf diese simulierten Daten.
+Der obige Vergleich zeigt deutlich, dass sich die geschätzte ACF dem theoretischen ACF des AR(1)-Prozesses bei höherer Beobachtungszahl annähert. Bei niedriger Beobachtungszahl werden die Autokovarianzen für die niedrigen Lags tendenziell unterschätzt und oszillieren für die höhren Lags deutlich um die null. Für die hohen Beobachtungszahlen ab 1000 können nurnoch kleine Unterschiede festgestellt werden.
 
 # Durbin-Levinson Algorithmus
 
@@ -134,6 +134,7 @@ dl_forecast <- function(x){
         forecast
 }
 ```
+
 Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), AR(2), AR(3), MA(1), Ma(2), ARMA(1,1).
 
 ```{r}
@@ -149,16 +150,16 @@ dl_sim7 <- arma_sim(phi=0.5, theta = 0.5, n=250, burnin=1000)
 
 ```
 
-Für die AR-Prozesses ist es leicht zu testen ob der Durbin-Levinson Algorithmus erfolgreich war, da dieser die AR-Coeffizienten schätzt. Beispielsweise bei einem AR(1)-Prozess sollte der Durbin-Levinson für den ersten Coeffizienten den richtigen AR-Coeffizienten schätzen und für die restlichen Coeffizienten Zahlen gegen Null. Dies wird im folgenden untersucht:
+Für die AR-Prozesses ist es leicht zu testen ob der Durbin-Levinson Algorithmus erfolgreich war, da dieser die AR-Coeffizienten schätzt. Beispielsweise bei einem AR(1)-Prozess sollte der Durbin-Levinson für den ersten Coeffizienten den richtigen AR-Coeffizienten schätzen und für die restlichen Coeffizienten Schätzungen gegen Null liefern. Dies wird im folgenden untersucht:
 
 ```{r}
-# AR(1) - (0.9)
+# AR(1) - (0.9) - maximales p
 tail(DL(dl_sim1),10)
 
-# AR(2) - (0.6,0.2)
+# AR(2) - (0.6,0.2) - maximales p
 tail(DL(dl_sim2),10)
 
-# AR(3) - (0.6,-0.1,0.3)
+# AR(3) - (0.6,-0.1,0.3) - maximales p
 tail(DL(dl_sim3),10)
 
 ```
@@ -202,9 +203,9 @@ plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
 ```
 
 Wie erwartet zeigen sich für vor allem für die AR-Prozesse passable Ergebnisse. Trotz recht wenigen Datenpunkten folgen die one-step-ahead Forecats der Zeitreihe zumindest in der Tendenz. Es zeigen sich vor allem bessere Ergebnisse für spätere Zeitpunkte, für die mehr Daten zur Verfügung stehen. Für MA-Prozesse ist theoretisch der Innovations-Alogrithmus besser geeignet.
-Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus auch recht zufriedenstellend. Allgemein kann man sagen umso mehr "Struktur" in den Zeitriehen zu finden ist umso besser ist es auch möglich Vorhersagen mit dem Durbin-Levinson Algorithmus zu bestimmen.
+Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus auch recht zufriedenstellend. Allgemein kann man sagen umso mehr "Struktur" in den Zeitriehen zu finden ist umso besser ist es auch möglich Vorhersagen mit dem Durbin-Levinson Algorithmus zu erzeugen.
 
-Was bei diesem Algorithmus noch auffällt, ist das die meisten geschätzen Parameter theoretisch gegen Null gehen sollten. Wegen dem Rauschen und der niedrigen Beobachtungszahl bei der Berechnung der Autokovarianzen aus hohen Lags ist dies in der Praxis nicht so. Somit könnten möglicherweise die Vorhersagen verbessert werden wenn man annimmt, dass die letzten 10 Beobachtungen besonders einflussreich für die Vorhersage sein sollten. Dafür werden die Rekursionen beim Durbin-Levinson auf 10 begrenzt, sodass er 10 $\phi's$ ausgibt. Diese werden dann für das forecasten verwendet. Dies wird in folgender Funktion umgesetzt.
+Was bei diesem Algorithmus noch auffällt, ist das die meisten geschätzen Parameter theoretisch gegen Null gehen sollten. Wegen dem Rauschen und der niedrigen Beobachtungszahl bei der Berechnung der Autokovarianzen aus hohen Lags ist dies in der Praxis nicht der Fall. Somit könnten möglicherweise die Vorhersagen verbessert werden, wenn man annimmt, dass die letzten 10 Beobachtungen besonders einflussreich für die Vorhersage sein sollten. Dafür werden die Rekursionen beim Durbin-Levinson auf 10 begrenzt, sodass dieser 10 $\phi's$ ausgibt. Diese werden dann für das forecasten verwendet. Dies wird in folgender Funktion umgesetzt:
 
 ```{r}
 dl_forecast_10 <- function(x){
@@ -243,17 +244,17 @@ Danach werden die selben Plots wie oben nochmals mit den neuen Vorhersagen erzeu
 
 ```{r fig4, fig.width = 7, fig.asp = .3}
 
-plot_dl_forecasts(dl_sim1, dl_1, "AR(1) - (0.9)")
-plot_dl_forecasts(dl_sim2, dl_2, "AR(2) - (0.6,0.2)")
-plot_dl_forecasts(dl_sim3, dl_3, "AR(3) - (0.6,-0.1,0.3)")
-plot_dl_forecasts(dl_sim4, dl_4, "Ma(1) - (0.5)")
-plot_dl_forecasts(dl_sim5, dl_5, "Ma(2) - (0.6,-0.2)")
-plot_dl_forecasts(dl_sim6, dl_6, "MA(3) - (0.6,-0.2,0.7)")
-plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
+plot_dl_forecasts(dl_sim1, dl_1, "AR(1) - (0.9) - p=10")
+plot_dl_forecasts(dl_sim2, dl_2, "AR(2) - (0.6,0.2) - p=10")
+plot_dl_forecasts(dl_sim3, dl_3, "AR(3) - (0.6,-0.1,0.3) - p=10")
+plot_dl_forecasts(dl_sim4, dl_4, "Ma(1) - (0.5) - p=10")
+plot_dl_forecasts(dl_sim5, dl_5, "Ma(2) - (0.6,-0.2) - p=10")
+plot_dl_forecasts(dl_sim6, dl_6, "MA(3) - (0.6,-0.2,0.7) - p=10")
+plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5) - p=10")
 
 ```
 
-Die Plots zeigen, dass durch die Beschränkung der verwendeten Autokovarianzen deutlich bessere Ergebnisse erzielt werden können. Dem zugrunde liegt natürlich eine Annahme über die Länge des Prozesses. Meine Interpretation ist das sich viele Schätzungenauigkeiten akkumulieren wenn so viele $\phi's$ wie Beobachtungen geschätzt werden. Auch die Schätzungen der letzten Autokovarianzen im ACF ist ungenau, da hierfür wenige (im Fall der letzten Autokovarianz nur eine) Beobachtungen vorliegen. Diese Ungenauigkeit schlägt sich dann auch die Vorhersagen durch den Durbin-Levinson Algortihmus durch. Somit dürfte die Wahl der optimalen Anzahl von Rekursionen im Alogrithmus von der Einschätzung der Länge des Prozesses und Anzahl der Datenpunkte abhängen.
+Die Plots zeigen, dass durch die Beschränkung der verwendeten Autokovarianzen deutlich bessere Ergebnisse erzielt werden können. Dem zugrunde liegt natürlich eine Annahme über die Ordnung des Prozesses. Meine Interpretation ist das sich viele Schätzungenauigkeiten akkumulieren wenn so viele $\phi's$ wie Beobachtungen geschätzt werden. Auch die Schätzungen der letzten Autokovarianzen im ACF ist ungenau, da hierfür wenige (im Fall der letzten Autokovarianz nur eine) Beobachtungen vorliegen. Diese Ungenauigkeit schlägt sich dann auch die Vorhersagen durch den Durbin-Levinson Algortihmus durch. Somit dürfte die Wahl der optimalen Anzahl von Rekursionen im Alogrithmus von der Einschätzung der Länge des Prozesses und Anzahl der Datenpunkte abhängen.
 
 
 ##Innovation Prediction
@@ -303,7 +304,7 @@ plot_in_forecasts <- function(series, forecast, ...){
 plot_in_forecasts(dl_sim1, in_sim1, "AR(1) - (0.9)")
 plot_in_forecasts(dl_sim2, in_sim2, "AR(2) - (0.6,0.2)")
 plot_in_forecasts(dl_sim3, in_sim3, "AR(3) - (0.6,-0.1,0.3)")
-plot_in_forecasts(dl_sim4, in_sim4, "Ma(1) - (0.5)")
+plot_in_forecasts(dl_sim4, in_sim4, "Ma(1) - (0.5) - p=10")
 plot_in_forecasts(dl_sim5, in_sim5, "Ma(2) - (0.6,-0.2)")
 plot_in_forecasts(dl_sim6, in_sim6, "MA(3) - (0.6,-0.2,0.7)")
 plot_in_forecasts(dl_sim7, in_sim7, "ARMA(1,1) - (0.5, 0.5)")
