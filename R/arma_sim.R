@@ -6,21 +6,21 @@
 #' plynomials, one for the autoregression (AR) and the second for the moving
 #' average (MA). These polynomials can be parametrized in this function, which
 #' gives than a simulated time series with the specified characteristics. For
-#' more detials see the long dokumentation in the vignette "Dokumentation".
+#' more details see the long documentation in the vignette "Dokumentation".
 #'
 #' @param phi,theta a numeric vector specifying the AR(MA)-Coefficients of an
-#'   ARMA(p,q) model.
+#'   ARMA(p,q) model
 #' @param mu a numeric vector specifying the mean of the ARMA(p,q)-Series.
-#'   Default is zero mean.
+#'   Default is zero mean
 #' @param n an integer specifying the length of the resulting time series.
-#' @param innov.gen a function from which the random innovations are drawn.
+#' @param innov.gen a distribution, from which the random innovations are drawn.
 #' @param innov an optional time series of innovations. If not provided,
 #'   rand.gen is used
 #' @param burnin an integer specifying the number of datapoints that are going
 #'   to be discarded, so that the characteristics of final series do not depend
-#'   on the initial values.
+#'   on the initial values
 #' @return object of class "arma" containing the simulated arma series, the
-#'   innovation series and the specified parameters.
+#'   innovation series and the specified parameters
 #' @examples
 #' arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100)
 #' @export

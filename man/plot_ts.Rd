@@ -7,11 +7,11 @@
 plot_ts(ts)
 }
 \arguments{
-\item{ts}{A numeric vector containing a time series or an object of class
-"arma".}
+\item{ts}{a numeric vector containing a time series or an object of class
+"arma"}
 }
 \value{
-A numeric vector containing the sample autocovariance function.
+a numeric vector containing the sample autocovariance function
 }
 \description{
 The function plots a given Time Series.

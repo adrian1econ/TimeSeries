@@ -4,9 +4,9 @@
 #'
 #' Details
 #'
-#' @param ts A numeric vector containing a time series or an object of class
-#'   "arma".
-#' @return A numeric vector containing the sample autocovariance function.
+#' @param ts a numeric vector containing a time series or an object of class
+#'   "arma"
+#' @return a numeric vector containing the sample autocovariance function
 #' @examples
 #' plot_ts(arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100))
 #' @export

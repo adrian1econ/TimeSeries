@@ -7,24 +7,24 @@
 DL(ts, p = NULL)
 }
 \arguments{
-\item{ts}{A numeric vector containing a time series or an object of class
+\item{ts}{a numeric vector containing a time series or an object of class
 "arma".}
 
-\item{p}{Number of recursions or number of phi's to be determined.}
+\item{p}{number of recursions or number of phi's to be determined.}
 }
 \value{
-Numeric vector containing the phi-Coefficients determined by the
+a numeric vector containing the phi-Coefficients determined by the
 Durbin-Levinson algorithm.
 }
 \description{
-Application of the Durbin-Levinson Algorithm for forecasting time series.
+Application of the Durbin-Levinson algorithm for forecasting time series.
 }
 \details{
 The Durbin-Levinson Algorithm is a recursive algorithm based on the
 autocorrelation function of the input time series. It computes the same
 number of AR parameters as is the length of the input series. These estimated
 AR parameters can be multiplied with the input series to produce a
-one-step-ahead forecast. For more detials see the long dokumentation in the
+one-step-ahead forecast. For more details see the long documentation in the
 vignette "Dokumentation".
 }
 \examples{
