@@ -25,7 +25,7 @@ library(ggplot2)
 
 # Autokovarianz-Funktion
 
-In diesem Teil soll die Funktion *acf* getestet werden. Dazu wird ein AR(1)-Prozess mithilfe der Funktion *arma_sim* simuliert. Für diesen Prozess ist es leicht möglich die wahre theoretische Autokovarianz-Funktion zu berechnen.
+In diesem Teil soll die Funktion *acf* getestet werden. Dazu wird ein AR(1)-Prozess mithilfe der Funktion *arma_sim* simuliert. Für diesen Prozess ist es leicht möglich die "wahre" theoretische Autokovarianz-Funktion zu berechnen.
 
 ## Theoretische ACF eines AR(1)-Prozesses
 
@@ -49,6 +49,7 @@ $$
 $$
 Nun wird die theoretische ACF für eine AR(1)-Prozess mit $\phi=0.8$ und $n=100$ berechnet.
 Später wird die Standardnormalverteilung für das Rauschen verwendet. Somit gilt $\sigma_{\epsilon}^2=1$.
+
 ```{r fig1, fig.width = 7, fig.asp = .3}
 gamma_0 <- 1/(1-0.8^2)
 
