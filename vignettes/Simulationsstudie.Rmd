@@ -323,4 +323,4 @@ plot_comp_forecasts <- function(series, forecast1, forecast2, ...){
 plot_comp_forecasts(dl_sim1,dl_1,in_sim1, "AR(1) - (0.9)")
 plot_comp_forecasts(dl_sim4,dl_4,in_sim4, "MA(1) - (0.5)")
 ```
-Man sieht in der näheren Analyse, dass beide Algorithmen nur die Tedenzen von den jeweiligen Graphen hinbekommen. Dies zeigt wie schwer schon allein bei so einfachen Prozessen die Vorhersage von Werten ist. Man kann erkennen, dass der Innovation Algorithmus besser beim Ma Prozess ist und DL Algorithums beim AR Prozess ist. Aber der unterschied ist überraschend gering
+Man sieht in der näheren Analyse, dass beide Algorithmen nur die Tedenzen von den jeweiligen Graphen hinbekommen. Dies zeigt wie schwer schon allein bei so einfachen Prozessen die Vorhersage von Werten ist. Man kann erkennen, dass der Innovation Algorithmus(grün) besser beim Ma Prozess ist und DL Algorithums(blau) beim AR Prozess ist. Aber der unterschied ist überraschend gering. Besonders der Innovation Algorithmus kann den AR1 Prozess gut darstellen.
