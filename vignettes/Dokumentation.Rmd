@@ -22,6 +22,7 @@ Diese Vignette demonstriert die Fähigkeiten des Pakets *TimeSeries*, welches fo
 * Berechnung der Autokovarianzfunktion einer Zeitreihe (*acf*)
 * Implementierung des Durbin-Levinson Algorithmus (*DL*)
 * Plotten von Zeitreihen (*plot_ts*)
+* Implementierung des Innovations Algorithmus (*innovation*) und Vorhersagen (*innovation_prdeiction*)
 
 Dafür wird als erstes das Paket *TimeSeries* geladen.
 ```{r setup, message=F, warning=F}
@@ -30,10 +31,10 @@ library(TimeSeries)
         
 ## Simulation eines ARMA-Prozesses
 Mithilfe der Funktion *arma_sim* können ARMA-Prozesse simuliert werden.
-ARMA-Prozesse sind allgemein eine Mischung aus autoregressiven (AR)- und moving average (MA)-Prozessen. Die so Zeitreihen sind auch die Grundlage der Simulationsstudie, in der weitere Funktionen des Pakets getestet werden.
-Im folgenden wird eine ARMA-Zeitreihe  Die Funktion *arma_sim* erzeugt eine Zeitreihe, welche folgende Formel aus Brookwell et al. (2002) erfüllt:
+ARMA-Prozesse sind allgemein eine Mischung aus autoregressiven (AR)- und moving average (MA)-Prozessen. Die so simulierten Zeitreihen sind auch die Grundlage der Simulationsstudie, in der die Funktionen des Pakets weiter getestet werden.
+Die Funktion *arma_sim* erzeugt eine ARMA-Zeitreihe, welche folgende Formel aus Brookwell et al. (2002) erfüllt:
 $$X_t-\phi_1X_{t-1}-...-\phi_pX_{t-p}=Z_t+\theta_1Z_{t-1}+...+\theta_qZ_{t-q}.$$
-Hier sind die $\phi's$ ($\theta's$), die Paramter welche den autoregressiven (moving average) Prozess charakterisieren. Die $Z's$ sind random Innovations. Als Default sind diese Standardnormalverteilt.  In der Funktion *arma_sim* können diese Paramter in den gleichnamigen Inputvariablen jeweils als numerische Vektoren angegeben werden. Es muss mindestens eine der beiden Variablen (*phi*, *theta*) spezifiziert werden. Zum zweiten muss die Länge der resultierenden Zeitreihe in der Inputvariable (*n*) gesetzt werden.
+Hier sind die $\phi's$ ($\theta's$), die Paramter welche den autoregressiven (moving average) Prozess charakterisieren. Die $Z's$ sind Rauschterme. Als Standardspezifikation sind diese standardnormalverteilt. In der Funktion *arma_sim* können diese Paramter ($\phi$'s,$\theta$'s) in den gleichnamigen Inputvariablen jeweils als numerische Vektoren angegeben werden. Es muss mindestens eine der beiden Variablen (*phi*, *theta*) spezifiziert werden. Zum zweiten muss die Länge der resultierenden Zeitreihe in der Inputvariable (*n*) spezifiziert werden.
 
 Der folgende Code simuliert 100 Beobachtungen eines ARMA(2,2)-Prozesses:
 ```{r}
@@ -43,18 +44,19 @@ sim_obj <- arma_sim(phi = c(0.5,-0.2),
                     n = 100)
 str(sim_obj)
 ```
-Hier ist auch die Struktur des Outputs zu erkennen. Es wird ein Objekt der Klasse "arma" ausgegeben, welches auf einer Liste beruht. Unter *innov* sind die random Innavtions der jeweiligen Periode gespeichert. Auch die Inputparamter des ARMA-Prozesse können abgerufen werden. Damit die reultierende Zeitreihe weniger von den Startwerten abhängt, kann eine "Burn-in" Periode bestimmt werden in der sich der Prozess einpendeln kann.
+
+Hier ist auch die Struktur des Outputs zu erkennen. Es wird ein Objekt der Klasse "arma" ausgegeben, welches auf einer Liste beruht. Unter *innov* sind die Rauschterme der jeweiligen Periode gespeichert. Auch die Inputparamter des ARMA-Prozesse können abgerufen werden. Damit die reultierende Zeitreihe weniger von den Startwerten abhängt, kann eine "Burn-in" Periode bestimmt werden in der sich der Prozess einpendeln kann.
 Die Länge dieser Periode ist in dem Objekt *burnin* im Output abgespeichert und kann in der gleichnmaigen Inputvariable spezifiziert werden.
 
-Der folgende Plot zeigt, die oben simulierte Zeitreihe und wird mit der Funltion *plot_ts erstellt.
-Diese Funktion ermöglicht einfacht Linienplots von Zeitreihen und funktioniert auch mit "arma"-Objekten.
+Der folgende Plot zeigt, die oben simulierte Zeitreihe und wird mit der Funltion *plot_ts* erstellt.
+Diese Funktion ermöglicht einfache Linienplots von Zeitreihen und reagiert auf "arma"-Objekte.
 ```{r fig1, fig.width = 7, fig.asp = .3}
 library(ggplot2)
 library(tibble)
 
 plot_ts(sim_obj)
 ```
-Man kann in diesem Plot deutlich erkennen, dass die Funktion *arma_sim* als Standard Zeitreihen mit einem Mittelwert von Null erzeugt. Ein anderer Mittelwert kann mit der Variable *mu* spezifiziert werden.
+Man kann in diesem Plot deutlich erkennen, dass die Funktion *arma_sim* standardmäßig Zeitreihen mit einem Mittelwert von Null erzeugt. Ein anderer Mittelwert kann mit der Variable *mu* spezifiziert werden.
 Im folgenden ist zu erkennen, dass sich der Mittelwert nach der Eingabe von *mu* verändert.
 
 ```{r fig2, fig.width = 7, fig.asp = .3}
@@ -68,8 +70,8 @@ sim_obj2 <- arma_sim(phi = c(0.5,-0.2),
 plot_ts(sim_obj2)
 ```
 
-Als letztes möglich in der Funktion die Verteilung der Innovations bzw. auch die Innovations an sich zu spezifizieren. Durch die Inputvariable *innov* kann eine eigene Reihe von Innovations übergeben werden. Die zweite Möglichkeit ist es die Verteilung der Innovations in *innov.gen* zu spezifizieren, und die Verteilungsparameter in *...* zu übergeben.
-Im folgenden ist ein Plot mit höherer Standardabweichung der Innovations zu sehen.
+Als letztes ist es in der Funktion möglich die Verteilung der Innovations bzw. auch die Innovations an sich zu spezifizieren. Durch die Inputvariable *innov* kann eine eigene Reihe von Innovations übergeben werden (Das war beim testen der Funktion nützlich). Die zweite Möglichkeit ist es die Verteilung der Innovations in *innov.gen* zu spezifizieren, und die Verteilungsparameter in *...* zu übergeben.
+Im folgenden ist ein Plot mit höherer Standardabweichung der Innovations zu sehen. Die Verteilung wird bei der Normalverteilung belassen, könnte jedoch auch geändert werden.
 
 ```{r fig3, fig.width = 7, fig.asp = .3}
 set.seed(12345)
@@ -83,13 +85,15 @@ sim_obj3 <- arma_sim(phi = c(0.5,-0.2),
 plot_ts(sim_obj3)
 ```
 
+Durch das setzten des "Seeds" ist die Form der Zeitreihe gleich zum vorherigen Plot. Durch die höhere Standardabweihung sind die Ausschläge der Zeitreihe jedoch klar größer.
+
 ## Autokovarianz-Funktion
 
 Die Autokovarianz-Funktion gibt die Kovarianz der Realisationen eines Prozesses mit sich selbst zu früheren Zeitpunkten zurück. Damit ist sie ein erster Anhaltspunkt zu den zeitlichen Abhängigkeiten des Prozesses.
 Die Autokovarianz-Funktion ist nach Brookwell et al. (2002) für den Lag $h$ folgendermaßen definiert:
 
 $$\gamma_x(h)=Cov(X_{t+h},X_t) $$
-Die Funktion *acf* gibt standardmäßig die Autokovarianzen für den Lag $0$ bis Lag $n-1$ zurück. In der Inputvaribale lag.max kann die Anzahl der zurückgegebenen Autokovarianzen begrenzt werden. Die Funktion *acf* extrahiert ohne weiter Eingaben die Zeitreihe aus simulierten *arma*-Objekten.
+Die Funktion *acf* gibt standardmäßig die Stichprobenautokovarianzen für den Lag $0$ bis Lag $n-1$ zurück. In der Inputvaribale lag.max kann die Anzahl der zurückgegebenen Autokovarianzen begrenzt werden. Die Funktion *acf* extrahiert ohne weiter Eingaben die Zeitreihe aus simulierten *arma*-Objekten.
 
 ```{r fig4, fig.width = 7, fig.asp = .3}
 set.seed(123)
@@ -110,7 +114,7 @@ ma_plot <- ggplot(tibble(ACF=ma_acf, Lag=seq_along(ma_acf)), aes(x=Lag, y=ACF)) 
 ar_plot
 ma_plot
 ```
-Anhand der beiden Autokovarianz-Funktionen kann man eine erste Aussage über die Art des Prozesses treffen. Der erste Plot zeigt eine langsam abnehmende Autokovarianz-Funktion, was auf einen AR-Prozess hinweist. Der zweite Plot zeigt eine abprupt abnehemnde Autokovarianz-Funktion, was her auf einen MA-Prozess schließen lässt.
+Anhand der beiden Autokovarianz-Funktionen kann man eine erste Aussage über die Art des Prozesses treffen. Der erste Plot zeigt eine langsam abnehmende Autokovarianz-Funktion, was auf einen AR-Prozess hindeutet. Der zweite Plot zeigt eine abprupt abnehemnde Autokovarianz-Funktion, was eher auf einen MA-Prozess schließen lässt.
 
 
 ## Durbin-Levinson Algorithmus
