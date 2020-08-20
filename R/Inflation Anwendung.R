@@ -63,8 +63,6 @@ DL_Out <-  function(ts, n) {
   ts_ak
 }
 
-DL(diff_ts_red, 12L)
-
 ggplot(data = ts_data) +
   geom_point(mapping = aes(x = as.Date(Time), y = d.ts)) + 
   labs(title="Verteilung der Inflationsratendifferenzen",
