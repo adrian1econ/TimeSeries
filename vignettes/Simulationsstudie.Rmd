@@ -254,7 +254,7 @@ plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5) - p=10")
 
 ```
 
-Die Plots zeigen, dass durch die Beschränkung der verwendeten Autokovarianzen deutlich bessere Ergebnisse erzielt werden können. Dem zugrunde liegt natürlich eine Annahme über die Ordnung des Prozesses. Meine Interpretation ist das sich viele Schätzungenauigkeiten akkumulieren wenn so viele $\phi's$ wie Beobachtungen geschätzt werden. Auch die Schätzungen der letzten Autokovarianzen im ACF ist ungenau, da hierfür wenige (im Fall der letzten Autokovarianz nur eine) Beobachtungen vorliegen. Diese Ungenauigkeit schlägt sich dann auch die Vorhersagen durch den Durbin-Levinson Algortihmus durch. Somit dürfte die Wahl der optimalen Anzahl von Rekursionen im Alogrithmus von der Einschätzung der Länge des Prozesses und Anzahl der Datenpunkte abhängen.
+Die Plots zeigen, dass durch die Beschränkung der verwendeten Autokovarianzen deutlich bessere Ergebnisse erzielt werden können. Dem zugrunde liegt natürlich eine Annahme über die Ordnung des Prozesses. Meine Interpretation ist das sich viele Schätzungenauigkeiten akkumulieren, wenn so viele $\phi's$ wie Beobachtungen geschätzt werden. Auch die Schätzungen der letzten Autokovarianzen im ACF ist ungenau, da hierfür wenige (im Fall der letzten Autokovarianz nur eine) Beobachtungen vorliegen. Diese Ungenauigkeit schlägt sich dann auch die Vorhersagen durch den Durbin-Levinson Algortihmus durch. Somit dürfte die Wahl der optimalen Anzahl von Rekursionen im Alogrithmus von der Einschätzung der Länge des Prozesses und Anzahl der Datenpunkte abhängen.
 
 
 ##Innovation Prediction
