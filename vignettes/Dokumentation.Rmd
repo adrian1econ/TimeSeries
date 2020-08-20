@@ -237,7 +237,4 @@ Sollte eine Zeitreihe ein starkes sinusartiges Signal für eine Frequenz aufweis
 
 ## Literatur
 Brockwell, Peter J., Richard A. Davis, and Matthew V. Calder. Introduction to time series and forecasting. Vol. 2. New York: Springer, 2002.
-=======
-## Quellen
-Brockwell, Peter J., Richard A. Davis, and Matthew V. Calder. Introduction to time series and forecasting. Vol. 2. New York: springer, 2002.
->>>>>>> 907ccea1198b36d4876e8a08e48c72ef13138792
+
