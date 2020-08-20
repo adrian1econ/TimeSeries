@@ -238,7 +238,7 @@ for(i in 49:(length(dl_sim1$arma)-1))
 }
 ```
 Nun werden die Ergebnisse wie oben visualiert:
-```{r fig3, fig.width = 7, fig.asp = .3}
+```{r fig4, fig.width = 7, fig.asp = .3}
 
 plot_in_forecasts <- function(series, forecast, ...){
   tbl <- tibble(Series=series$arma, Forecast=forecast, Lag=1:250)
@@ -257,7 +257,7 @@ plot_in_forecasts(dl_sim6, in_sim6, "MA(3) - (0.6,-0.2,0.7)")
 plot_in_forecasts(dl_sim7, in_sim7, "ARMA(1,1) - (0.5, 0.5)")
 ```
 Allgemein erkennt man, dass der Algorithmus nach 100 Lags deutlich verbessert, aber bei den Spitzen meist noch zu niedrig schätzt. Die Verbesserung zwischen MA und AR Werte ist nicht deutlich zu sehen. Aber schlussendlich Vergleichen wir noch beide Algorithmen.
-```{r fig3, fig.width = 7, fig.asp = .3}
+```{r fig5, fig.width = 7, fig.asp = .3}
 plot_comp_forecasts <- function(series, forecast1, forecast2, ...){
   tbl <- tibble(Series=series$arma[200:250], Forecast1=forecast1[200:250], Forecast2=forecast2[200:250], Lag=200:250)
   
