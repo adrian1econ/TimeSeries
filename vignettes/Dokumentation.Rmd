@@ -202,6 +202,7 @@ innovation_prediction(ma_obj,steps=2)
 
 ## Periodogramm
 Das Periodogramm einer Zeitreihe $\{x_1,...,x_n\}$ ist eine stichprobenbasierte Funktion, aus der ein nicht-konsistenter Schätzer für die spektrale Leistungsdichtedichte gewonnen werden kann.
+
 Das Periodogramm einer Zeitreihe $\{x_1,...,x_n\}$ ist definiert als:
 $$
 I_n(\lambda)=\frac{1}{n} \Bigg| \sum \limits_{t=1}^{n}x_{t}e^{-it\lambda} \Bigg| ^2
@@ -211,7 +212,9 @@ Das Periodogramm folgt der Idee ein Signal in sinusartige Funktionen mit unkorre
 $$
 x_t=\sum \limits_{j \in F_n}a_j [\cos(\omega_jt) + i \sin(\omega_jt)]
 $$
-mit$\omega_j = \frac{2 \pi j}{n}$, den Fourier Frequenzen der Zeitreihe $\{x_1,...,x_n\}$, und $j \in F_n=\{j \in \mathbb{Z} : -\pi < \omega_j \leq \pi \}$. Man beachte, dass $F_n$ n Elemente enthält. Die Folge $\{a_j: j\in F_n\}$ wird als diskrete Fourier-Transformation der Zeitreihe $\{x_1,...,x_n\}$ bezeichnet.
+mit$\omega_j = \frac{2 \pi j}{n}$, den Fourier Frequenzen der Zeitreihe $\{x_1,...,x_n\}$, und $j \in F_n=\{j \in \mathbb{Z} : -\pi < \omega_j \leq \pi \}$. Man beachte, dass $F_n$ n Elemente enthält. 
+
+Die Folge $\{a_j: j\in F_n\}$ wird als diskrete Fourier-Transformation der Zeitreihe $\{x_1,...,x_n\}$ bezeichnet.
 $$
 a_j=\frac{1}{\sqrt{n}}\sum \limits_{t=1}^{n}x_t e^{-it\omega_j}
 $$
