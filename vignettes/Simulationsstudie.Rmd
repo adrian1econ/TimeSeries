@@ -140,7 +140,6 @@ dl_forecast <- function(x){
 }
 ```
 Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), AR(2), AR(3), MA(1), Ma(2), ARMA(1,1).
->>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
 
 ```{r}
 set.seed(123455)
@@ -212,7 +211,7 @@ Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus a
 
 ##Innovation Prediction
 
-In diesem Abschnitt soll untersucht werden ob der Innovation Algorithmus gute Vorhersagen für simulierte Daten liefert. Es wir dafür dasselbe Verfahren und die selben Funktionen wie beim DL Algorithmus angewendet, damit die beiden vergleichbar sind. Wir benutzen hier für die innovation_prediction Funktion.
+In diesem Abschnitt soll untersucht werden, ob der Innovation Algorithmus gute Vorhersagen für simulierte Daten liefert. Es wir dafür dasselbe Verfahren und die selben Funktionen wie beim DL Algorithmus angewendet, damit die beiden vergleichbar sind. Wir benutzen hier für die innovation_prediction Funktion.
 ```{r}
 # theta_1 <- innovation(sim1)
 # theta_4<- innovation(sim4)
@@ -222,13 +221,29 @@ In diesem Abschnitt soll untersucht werden ob der Innovation Algorithmus gute Vo
 # print(theta_4$theta[5:15,1:5])
 ```
 <<<<<<< HEAD
->>>>>>> c747b0c34b2bccde1a2c0e7a40cfbf193a98c170
+
 =======
 Doch zuerst schauen wir uns die Thetas des MA(1) und des Ar(1) Prozesses des Innovation Algorithmus an. Beim Ma(1) erkennen, dass die erste Spalte nahe an unseren theta = 0,5 ist und die restlichen Werte Betrags kleiner als 0,1 sind.
 Dies bestätigt auch die Theorie. Dabei sollten sogar Werte außerhalb der ersten Spalten gleich Null sein. Dies bekommen wir nicht, da die unsere Werte noch ein bisschen Zufällig sind und vielleicht auch wegen der Maschinengenauigkeit.
 Zumindest ist $\hat{X}_{n+1}\approx\theta_{n,1}(X_{n}-\hat{X}_{n})$. 
 Deshalb sollte der Innovation Algorithmus ein guter Schäter sein.
->>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
+
 
 Beim AR(1) ist der erst ab dem 7ter Spalte betragskleiner als 0,1, weshalb dort $\hat{X}_{n+1}$ von mehr Variabeln stärker abhängt, was das Vorhesagen
 ungenauer macht. 
+
+
+## Periodogramm
+In diesem Abschnitt soll untersucht werden, wie gut das Periodogramm als Spektraldichteschätzer funktioniert. Dafür 
+
+## Spektraldichte eines ARMA(p,q)-Prozesses
+$\{X_t\}$ ein kausaler ARMA Prozess und gilt $\phi(B) X_t = \theta(A)Z_t $ dann ist 
+$$
+f_X(\lambda)= \frac{\sigma^2}{2\pi} \frac{|\theta e^{-i\lambda}|^2}{|\phi e^{-i\lambda}|^2}
+$$
+die Spektraldichte des Prozesses (Brockwell et al 2002: 132).
+
+
+
+
+
