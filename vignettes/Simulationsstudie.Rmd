@@ -149,17 +149,33 @@ Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), 
 >>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
 
 ```{r}
-set.seed(123745)
+set.seed(123345)
 
-dl_sim1 <- arma_sim(phi = 0.9, n=250, burnin=1000)
+dl_sim1 <- arma_sim(phi = 0.8, n=250, burnin=1000)
 dl_sim2 <- arma_sim(phi = c(0.6,0.2), n=250, burnin=1000)
-dl_sim3 <- arma_sim(phi = c(0.6,-0.1,0.3), n=250, burnin=1000)
+dl_sim3 <- arma_sim(phi = c(0.6,0.5,-0.2), n=250, burnin=1000)
 dl_sim4 <- arma_sim(theta = 0.5, n=250, burnin=1000)
 dl_sim5 <- arma_sim(theta = c(0.6,-0.2), n=250, burnin=1000)
 dl_sim6 <- arma_sim(theta = c(0.6,-0.2,0.7), n=250, burnin=1000)
 dl_sim7 <- arma_sim(phi=0.5, theta = 0.5, n=250, burnin=1000)
 
 ```
+
+Für die AR-Prozesses ist es leicht zu testen ob der Durbin-Levinson Algorithmus erfolgreich war, da dieser die AR-Coeffizienten schätzt. Beispielsweise bei einem AR(1)-Prozess sollte der Durbin-Levinson für den ersten Coeffizienten den richtigen AR-Coeffizienten schätzen und für die restlichen Coeffizienten Zahlen gegen Null. Dies wird im folgenden untersucht:
+
+```{r}
+# AR(1) - (0.9)
+tail(DL(dl_sim1),10)
+
+# AR(2) - (0.6,0.2)
+tail(DL(dl_sim2),10)
+
+# AR(3) - (0.6,-0.1,0.3)
+tail(DL(dl_sim2),10)
+
+```
+
+Die Coeffizienten stimmen meist ungefähr mit den simulierten Prozessen überein, sodass der Algorithmus später möglicherweise auch sinnvolle Ergbenisse bei der Vorhersage erzielen wird.
 
 Nun werden für alle diese Prozesse die Vorhersagen berechnet.
 
@@ -197,7 +213,7 @@ plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
 
 ```
 
-Wie erwartet zeigen sich für vor allem für die AR-Prozesse positive Ergebnisse. Trotz recht wenigen Datenpunkten folgen die one-step-ahead Forecats der Zeitreihe zumindest in der Tendenz recht genau. Für MA-Prozesse ist theoretisch der Innovations-Alogrithmus besser geeignet.
+Wie erwartet zeigen sich für vor allem für die AR-Prozesse positive Ergebnisse. Trotz recht wenigen Datenpunkten folgen die one-step-ahead Forecats der Zeitreihe zumindest in der Tendenz recht genau. Es zeigen sich vor allem bessere Ergebnisse für spätere Zeitpunkte, für die mehr Daten zur Verfügung stehen. Für MA-Prozesse ist theoretisch der Innovations-Alogrithmus besser geeignet.
 Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus auch recht zufriedenstellend. Allgemein kann man sagen umso mehr "Struktur" in den Zeitriehen zu finden ist umso besser ist es auch möglich Vorhersagen mit dem Durbin-Levinson Algorithmus zu bestimmen.
 
 ##Innovation Prediction
