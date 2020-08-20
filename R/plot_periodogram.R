@@ -18,9 +18,9 @@ plot_periodogram <- function(pd){
   if( !is.numeric(pd)) stop("pd must be numeric vector.")
   
   # 2. Prepare the data
-  n <- length(pp)
-  if(n%%2==0) peri <- pp[((n/2)+1):n]
-  if(n%%2==1) peri <- pp[(floor(n/2)+1):n]
+  n <- length(pd)
+  if(n%%2==0) peri <- pd[((n/2)+1):n]
+  if(n%%2==1) peri <- pd[(floor(n/2)+1):n]
   
   nr <- length(peri)
   f <- 2*pi*(1:nr)/n
