@@ -187,10 +187,5 @@ $$ P_{n+h-1}=\hat{X}_{n+h}=\sum_{j=h}^{n+h-1}\theta_{n+h-1,j}(X_{n+h-j}-\hat{X}_
 Da aber für die Vorhersage des n-te Wertes $\theta$ bis zu $\theta_{n+h-1,n+h-1}$ berechnet werden muss, werden die ersten n Werte nur zur Berechnung der $\theta's$ benutzt werden.
 
 Die Funktion hat als neben der Zeitreihe *ts*, noch die optionalen Eingabenwerte *steps* und *lag.max*. Wobei steps (Standardwert = 1) angibt welches steps-te Element man vorhersagen will und *lag.max* (Standardwert: length(ts)-steps), wie viele Elemente der Zeitreihe benutzt werden, wobei die ersten step Schritte immer benötigt werden um die $\theta's$ des letzten Schritt zu berechnen.
-Folgender Beispiel Code zeigt die Benutzung:
-```{r}
-innovation_prediction(ma_obj)
-innovation_prediction(ma_obj,steps=2)
-```
 ## Quellen
 Brockwell, Peter J., Richard A. Davis, and Matthew V. Calder. Introduction to time series and forecasting. Vol. 2. New York: springer, 2002.
