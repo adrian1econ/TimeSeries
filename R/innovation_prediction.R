@@ -8,7 +8,7 @@
 #'
 #'  @param ts A numeric vector containing a time series or an object of class "arma".
 #' @param steps shows which x will be predicted
-#' @param lag.na Number of recursions to determined Prediction. (The first step's-values are needed to detect prediction)
+#' @param lag.na Number of recursions to determined prediction. (The first step's-values are needed to detect prediction)
 #' @return Numeric vector containing the prediction determined by the innovation algorithm.
 #' @examples
 #' innovation(arma_sim(theta = c(0.8,-0.3),n = 1000,burnin = 1000))
@@ -33,8 +33,8 @@ innovation_prediction <- function(ts,steps=1,lag.max=NA)
   # lag.max Check
   if( all(!is.numeric(lag.max),!is.na(lag.max)) ) stop("lag.max must be integer or NA!")
   if(length(lag.max)!=1) stop("length of lag.max must equal 1")
-  if(lag.max<1|lag.max>=length(x)) stop("lag.max musst be 0 between length of ts")
   if( is.na(lag.max) ) lag.max <- length(x)-steps
+  if(lag.max<1|lag.max>=length(x)) stop("lag.max musst be 0 between length of ts")
   if( lag.max%%1!=0 ) stop("lag.max must be integer or NA!")
 
   if((steps+lag.max)>length(x)) stop("steps + lag.max <= length(ts)")

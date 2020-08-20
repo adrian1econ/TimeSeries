@@ -22,23 +22,34 @@ library(tibble)
 library(ggplot2)
 ```
 
+
+# Autokovarianz-Funktion
+
 In diesem Teil soll die Funktion *acf* getestet werden. Dazu wird ein AR(1)-Prozess mithilfe der Funktion *arma_sim* simuliert. Für diesen Prozess ist es leicht möglich die wahre theoretische Autokovarianz-Funktion zu berechnen.
+
+## Theoretische ACF eines AR(1)-Prozesses
+
 Das Modell hat die folgende Form, wobei $\epsilon$ "white noise" ist:
-$$
-X_t=\phi X_{t-1}+\epsilon_t
 
 $$
+X_t=\phi X_{t-1}+\epsilon_t
+$$
 Die Varianz $\gamma_0$ berechnet sich folgendermaßen:
+
 $$
 \gamma(0)=Var(X_t)=Var(\phi X_{t-1}+\epsilon_t)=Var(\phi X_{t-1})+\sigma_{\epsilon}^2=\phi^2 Var(X_{t-1})+\sigma_{\epsilon}^2= \frac{\sigma_{\epsilon}^2}{1-\phi^2}
 $$
 Nun sind auch die weitern Autokovarianzen leicht bestimmbar:
+
 $$
 \gamma(1)=Cov(X_{t+1},X_t)=Cov(\phi X_t+\epsilon_t,X_t)=Cov(\phi X_t,X_t)+Cov(\epsilon_{t+1},X_t)=\phi Cov(X_t,X_t)+0=\phi \gamma(0)
 $$
+$$
+\gamma(2)=Cov(X_{t+2},X_t)=...=\phi^2 \gamma_0
+$$
 Nun wird die theoretische ACF für eine AR(1)-Prozess mit $\phi=0.8$ und $n=100$ berechnet.
-Später wird die Standardnormalverteilung für den Noise verwendet. Somit gilt $\sigma_{\epsilon}^2=1$.
-```{r}
+Später wird die Standardnormalverteilung für das Rauschen verwendet. Somit gilt $\sigma_{\epsilon}^2=1$.
+```{r fig1, fig.width = 7, fig.asp = .3}
 gamma_0 <- 1/(1-0.8^2)
 
 true_acf <- numeric(50)
@@ -47,12 +58,15 @@ for(i in 0:49){
         true_acf[i+1] <- gamma_i
 }
 
-true_acf_plot <- ggplot(tibble(ACF=true_acf, Lag=seq_along(true_acf)), aes(x=Lag, y=ACF)) +
+true_tbl <- tibble(ACF=true_acf, Lag=seq_along(true_acf))
+
+true_acf_plot <- ggplot(true_tbl, aes(x=Lag, y=ACF)) +
                 geom_bar(stat="identity") + 
-                ggtitle("AR(1)")
+                ggtitle("Theoretical ACF: AR(1)")
 true_acf_plot
 ```
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ## Spektraldichte eines ARMA(p,q)-Prozesses
 $\{X_t\}$ ein kausaler ARMA Prozess und gilt $\phi(B) X_t = \theta(A)Z_t $ dann ist 
@@ -63,11 +77,147 @@ die Spektraldichte des Prozesses (Brockwell et al 2002: 132).
 
 =======
 Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACF geschätzt.
+=======
+## Vergleich von theoretischer mit geschätzter ACF
 
-```{r}
-ar_obj <- arma_sim(phi = 0.8, n=200, burnin=1000)
-acf1 <- acf(ar_obj)
+Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACFs geschätzt. Es werden Zeitreihen unterschiedlicher Länge erzeugt um zu sehen, ob sich die geschätzten ACFs mit größerer Stichprobengröße dem theoretischen ACF annähern. Es werden lange "Burn-in"-Perioden gewählt, damit die Zeitreihe kaum von den zufälligen Startwerten abhängt. Dazu wird eine kleine Funktion erstellt, welche die simulierten ACFs mit dem theoretischen ACF plottet.
+
+```{r fig2, fig.width = 7, fig.asp = .3}
+set.seed(12345)
+
+ar_obj_50 <- arma_sim(phi = 0.8, n=50, burnin=1000)
+ar_obj_100 <- arma_sim(phi = 0.8, n=100, burnin=1000)
+ar_obj_200 <- arma_sim(phi = 0.8, n=200, burnin=1000)
+ar_obj_500 <- arma_sim(phi = 0.8, n=500, burnin=1000)
+ar_obj_1000 <- arma_sim(phi = 0.8, n=1000, burnin=1000)
+ar_obj_5000 <- arma_sim(phi = 0.8, n=5000, burnin=1000)
+
+
+ar <- arma_sim(phi = 0.8, n=50, burnin=1000)
+
+acf_plot <- function(ar, ...){
+        sim_tbl <- tibble(ACF=acf(ar)[1:50],Lag=1:50)
+        sim_tbl$Group <- "Simulation"
+        
+        true_tbl <- tibble(ACF=true_acf,Lag=1:50)
+        true_tbl$Group <- "Theoretical"
+        
+        tbl <- rbind(sim_tbl, true_tbl)
+        
+        acf_plot <- ggplot(tbl, aes(x=factor(Lag), y=ACF, fill=factor(Group))) +
+                geom_bar(stat='identity', position='dodge') + 
+                ggtitle(...) +
+                scale_x_discrete(name="Lag", breaks=seq(0,50,5))
+acf_plot
+}
+
+acf_plot(ar_obj_50, "50 obs") 
+acf_plot(ar_obj_100, "100 obs")
+acf_plot(ar_obj_200, "200 obs")
+acf_plot(ar_obj_500, "500 obs")
+acf_plot(ar_obj_1000, "1000 obs")
+acf_plot(ar_obj_5000, "5000 obs")
 
 ```
->>>>>>> c747b0c34b2bccde1a2c0e7a40cfbf193a98c170
 
+Der obige Vergleich zeigt deutlich, dass sich die geschätzte ACF dem theoretischen ACF des AR(1)-Prozesses bei höherer Beobachtungszahl annähert. Bei niedriger Beobachtungszahl werden die Autokovarianzen für die niedrigen Lags tendenziell unterschätzt und oszillieren für die höhren Lags deutlich um die null. Für die hohen Beobachtungszahlen ab 1000 können nurnoch kleine Unterschiede festgestellt werden. Diese Aussagen beziehen sich auf diese simulierten Daten.
+
+# Durbin-Levinson Algorithmus
+
+In diesem Abschnitt soll untersucht werden ob der Durbin-Levinson Algorithmus gute Vorhersagen für simulierte Daten liefert. Dafür werden zum einen 250 Datenpunkte verscheidener Prozesse simuliert. Nach 50 Beobachtungen wird eine "expanding window out-of-sample" Vorhersage durchgeführt. Diese 50 Beobachtungen werden übersprungen, da der Algorithmus eine bestimmte Menge an Daten benötigt um zuverlässig zu funktionieren. Also es werden alle Daten bis zum Zeitpunkt *t* verwendet um die Realisation in *t+1* vorherzusagen. Danach wird der Datensatz für die nächste Vorhersage um die Realisation in *t+1* erweitert. Für diese Art von Forecast wird eine Funktion definiert.
+
+```{r}
+dl_forecast <- function(x){
+        
+        x <- x$arma
+        len <- length(x)
+        forecast <- numeric(len)
+        
+        for(t in 0:(len-1)){
+                if(t<=49){
+                        forecast[t+1] <- NA
+                        next}
+                
+                x_temp <- x[1:t]
+                dl <- DL(x_temp)
+                forecast[t+1] <- sum(dl*x_temp)
+        }
+        forecast
+}
+```
+Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), AR(2), AR(3), MA(1), Ma(2), ARMA(1,1).
+>>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
+
+```{r}
+set.seed(123745)
+
+sim1 <- arma_sim(phi = 0.7, n=250, burnin=1000)
+sim2 <- arma_sim(phi = c(0.6,0.2), n=250, burnin=1000)
+sim3 <- arma_sim(phi = c(0.6,-0.2), n=250, burnin=1000)
+sim4 <- arma_sim(phi = c(0.7,0.3,-0.2), n=250, burnin=1000)
+sim5 <- arma_sim(theta = 0.5, n=250, burnin=1000)
+sim6 <- arma_sim(theta = c(0.4,0.9),n = 250, burnin = 1000)
+sim7 <- arma_sim(phi=0.5, theta = 0.5, n=250, burnin=1000)
+
+```
+
+Nun werden für alle diese Prozesse die Vorhersagen berechnet.
+
+```{r}
+dl_1 <- dl_forecast(sim1)
+dl_2 <- dl_forecast(sim2)
+dl_3 <- dl_forecast(sim3)
+dl_4 <- dl_forecast(sim4)
+dl_5 <- dl_forecast(sim5)
+dl_6 <- dl_forecast(sim6)
+dl_7 <- dl_forecast(sim7)
+```
+
+Nun sollen die Ergbnisse visualisiert werden. Dazu wird die simulierte Zeitreihe mit den Vorhersagen jeweils in einem Plot dargestellt.
+
+```{r fig3, fig.width = 7, fig.asp = .3}
+
+plot_dl_forecasts <- function(series, forecast, ...){
+  tbl <- tibble(Series=series$arma, Forecast=forecast, Lag=1:250)
+  
+  ggplot(tbl, aes(x=Lag)) + 
+    geom_line(aes(y = Series), color = "darkred", size=0.4) + 
+    geom_line(aes(y = Forecast), color="steelblue", size=0.4) +
+    ggtitle(...)
+}
+
+plot_dl_forecasts(sim1, dl_1, "AR(1) - (0.7)")
+plot_dl_forecasts(sim2, dl_2, "AR(2) - (0.6, 0.2)")
+plot_dl_forecasts(sim3, dl_3, "AR(2) - (0.6,-0.2)")
+plot_dl_forecasts(sim4, dl_4, "Ar(3) - (0.7,0.3,-0.2)")
+plot_dl_forecasts(sim5, dl_5, "Ma(1) - (0.6,-0.2)")
+plot_dl_forecasts(sim6, dl_6, "MA(2) - (0.4,0.9)")
+plot_dl_forecasts(sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
+
+```
+
+Wie erwartet zeigen sich für vor allem für die AR-Prozesse positive Ergebnisse. Trotz recht wenigen Datenpunkten folgen die one-step-ahead Forecats der Zeitreihe zumindest in der Tendenz recht genau. Für MA-Prozesse ist theoretisch der Innovations-Alogrithmus besser geeignet.
+Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus auch recht zufriedenstellend. Allgemein kann man sagen umso mehr "Struktur" in den Zeitriehen zu finden ist umso besser ist es auch möglich Vorhersagen mit dem Durbin-Levinson Algorithmus zu bestimmen.
+
+##Innovation Prediction
+
+In diesem Abschnitt soll untersucht werden ob der Innovation Algorithmus gute Vorhersagen für simulierte Daten liefert. Es wir dafür dasselbe Verfahren und die selben Funktionen wie beim DL Algorithmus angewendet, damit die beiden vergleichbar sind. Wir benutzen hier für die innovation_prediction Funktion.
+```{r}
+theta_1 <- innovation(sim1)
+theta_4<- innovation(sim4)
+print("Ar(1)-Prozess")
+print(theta_1$theta[5:15,1:10])
+print("Ma(1)-Prozess")
+print(theta_4$theta[5:15,1:5])
+```
+<<<<<<< HEAD
+>>>>>>> c747b0c34b2bccde1a2c0e7a40cfbf193a98c170
+=======
+Doch zuerst schauen wir uns die Thetas des MA(1) und des Ar(1) Prozesses des Innovation Algorithmus an. Beim Ma(1) erkennen, dass die erste Spalte nahe an unseren theta = 0,5 ist und die restlichen Werte Betrags kleiner als 0,1 sind.
+Dies bestätigt auch die Theorie. Dabei sollten sogar Werte außerhalb der ersten Spalten gleich Null sein. Dies bekommen wir nicht, da die unsere Werte noch ein bisschen Zufällig sind und vielleicht auch wegen der Maschinengenauigkeit.
+Zumindest ist $\hat{X}_{n+1}\approx\theta_{n,1}(X_{n}-\hat{X}_{n})$. 
+Deshalb sollte der Innovation Algorithmus ein guter Schäter sein.
+>>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
+
+Beim AR(1) ist der erst ab dem 7ter Spalte betragskleiner als 0,1, weshalb dort $\hat{X}_{n+1}$ von mehr Variabeln stärker abhängt, was das Vorhesagen
+ungenauer macht. 

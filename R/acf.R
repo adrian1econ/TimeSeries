@@ -1,13 +1,15 @@
 #' Autocovariance Function Estimation
 #'
-#' The function acf computes estimates of the
-#' autocovariance function.
+#' The function acf computes an estimate of the autocovariance function.
 #'
-#' Details
+#' The autocovariance is a function that gives the covariance of the process
+#' with itself at pairs of time points. For more detials see the long
+#' dokumentation in the vignette "Dokumentation".
 #'
 #' @param ts A numeric vector containing a time series or an object of class
 #'   "arma" ARMA(p,q) model.
-#' @param lag.max An integer specifying the maximum lag, for which the a
+#' @param lag.max An integer specifying the maximum lag, for which the
+#'   autocovariance is estimated
 #' @return A numeric vector containing the sample autocovariance function.
 #' @examples
 #' acf(arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100))
