@@ -66,14 +66,7 @@ true_acf_plot <- ggplot(true_tbl, aes(x=Lag, y=ACF)) +
 true_acf_plot
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-## Spektraldichte eines ARMA(p,q)-Prozesses
-$\{X_t\}$ ein kausaler ARMA Prozess und gilt $\phi(B) X_t = \theta(A)Z_t $ dann ist 
-$$
-f_X(\lambda)= \frac{\sigma^2}{2\pi} \frac{|\theta e^{-i\lambda}|^2}{|\phi e^{-i\lambda}|^2}
-$$
-die Spektraldichte des Prozesses (Brockwell et al 2002: 132).
+
 
 =======
 Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACF geschätzt.
