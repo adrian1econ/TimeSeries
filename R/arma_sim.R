@@ -6,21 +6,21 @@
 #' plynomials, one for the autoregression (AR) and the second for the moving
 #' average (MA). These polynomials can be parametrized in this function, which
 #' gives than a simulated time series with the specified characteristics. For
-#' more detials see the long dokumentation in the vignette "Dokumentation".
+#' more details see the long documentation in the vignette "Dokumentation".
 #'
 #' @param phi,theta a numeric vector specifying the AR(MA)-Coefficients of an
-#'   ARMA(p,q) model.
+#'   ARMA(p,q) model
 #' @param mu a numeric vector specifying the mean of the ARMA(p,q)-Series.
-#'   Default is zero mean.
+#'   Default is zero mean
 #' @param n an integer specifying the length of the resulting time series.
-#' @param innov.gen a function from which the random innovations are drawn.
+#' @param innov.gen a distribution, from which the random innovations are drawn.
 #' @param innov an optional time series of innovations. If not provided,
 #'   rand.gen is used
 #' @param burnin an integer specifying the number of datapoints that are going
 #'   to be discarded, so that the characteristics of final series do not depend
-#'   on the initial values.
+#'   on the initial values
 #' @return object of class "arma" containing the simulated arma series, the
-#'   innovation series and the specified parameters.
+#'   innovation series and the specified parameters
 #' @examples
 #' arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100)
 #' @export
@@ -52,9 +52,9 @@ arma_sim <- function(phi = NULL, theta = NULL, mu = 0, n, innov.gen = rnorm, inn
         l_max <- max(length(phi), length(theta))
         if(is.null(burnin)) burnin <- 10*l_max
         if(!is.numeric(burnin)) stop("burnin must be an integer or NULL!")
+        if(!length(burnin)==1) stop("burnin must be an integer or NULL!")
         if(burnin%%1!=0) stop("burnin must be an integer or NULL!")
         if(burnin < 0) stop("burnin must be positive!")
-        if(!length(burnin)==1) stop("burnin must be an integer or NULL!")
         if(burnin < max(p,q)) stop("burnin period must be at least as long as max(p,q)")
 
         # innov
