@@ -171,14 +171,38 @@ plot_dl_forecasts <- function(series, forecast, ...){
                 ggtitle(...)
 }
 
-plot_dl_forecasts(dl_sim1, dl_1, "AR(1) - (0.7)")
-plot_dl_forecasts(dl_sim2, dl_2, "AR(2) - (0.6, 0.2)")
-plot_dl_forecasts(dl_sim3, dl_3, "AR(2) - (0.6,-0.2)")
-plot_dl_forecasts(dl_sim4, dl_4, "AR(3) - (0.7,0.3,-0.2)")
-plot_dl_forecasts(dl_sim5, dl_5, "MA(1) - (0.5)")
-plot_dl_forecasts(dl_sim6, dl_6, "ARMA(1,1) - (0.5, 0,5)")
+plot_dl_forecasts(sim1, dl_1, "AR(1) - (0.7)")
+plot_dl_forecasts(sim2, dl_2, "AR(2) - (0.6, 0.2)")
+plot_dl_forecasts(sim3, dl_3, "AR(3) - (0.7,0.3,-0.2)")
+plot_dl_forecasts(sim4, dl_4, "Ma(1) - (0.5)")
+plot_dl_forecasts(sim5, dl_5, "Ma(2) - (0.6,-0.2)")
+plot_dl_forecasts(sim6, dl_6, "MA(3) - (0.6,-0.2,0.7)")
+plot_dl_forecasts(sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
 
 ```
 
 Wie erwartet zeigen sich für vor allem für die AR-Prozesse positive Ergebnisse. Trotz recht wenigen Datenpunkten folgen die one-step-ahead Forecats der Zeitreihe zumindest in der Tendenz recht genau. Für MA-Prozesse ist theoretisch der Innovations-Alogrithmus besser geeignet.
 Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus auch recht zufriedenstellend. Allgemein kann man sagen umso mehr "Struktur" in den Zeitriehen zu finden ist umso besser ist es auch möglich Vorhersagen mit dem Durbin-Levinson Algorithmus zu bestimmen.
+
+##Innovation Prediction
+
+In diesem Abschnitt soll untersucht werden ob der Innovation Algorithmus gute Vorhersagen für simulierte Daten liefert. Es wir dafür dasselbe Verfahren und die selben Funktionen wie beim DL Algorithmus angewendet, damit die beiden vergleichbar sind. Wir benutzen hier für die innovation_prediction Funktion.
+```{r}
+theta_1 <- innovation(sim1)
+theta_4<- innovation(sim4)
+print("Ar(1)-Prozess")
+print(theta_1$theta[5:15,1:10])
+print("Ma(1)-Prozess")
+print(theta_4$theta[5:15,1:5])
+```
+Doch zuerst schauen wir uns die Thetas des MA(1) und des Ar(1) Prozesses des Innovation Algorithmus an. Beim Ma(1) erkennen, dass die erste Spalte nahe an unseren theta = 0,5 ist und die restlichen Werte Betrags kleiner als 0,1 sind.
+Dies bestätigt auch die Theorie. Dabei sollten sogar Werte außerhalb der ersten Spalten gleich Null sein. Dies bekommen wir nicht, da die unsere Werte noch ein bisschen Zufällig sind und vielleicht auch wegen der Maschinengenauigkeit.
+Zumindest ist $\hat{X}_{n+1}\approx\theta_{n,1}(X_{n}-\hat{X}_{n})$. 
+Deshalb sollte der Innovation Algorithmus ein guter Schäter sein.
+
+Beim AR(1) ist der erst ab dem 7ter Spalte betragskleiner als 0,1, weshalb dort $\hat{X}_{n+1}$ von mehr Variabeln stärker abhängt, was das Vorhesagen
+ungenauer macht.
+```{r}
+
+```
+
