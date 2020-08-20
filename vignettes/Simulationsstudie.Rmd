@@ -113,7 +113,7 @@ Der obige Vergleich zeigt deutlich, dass sich die geschätzte ACF dem theoretisc
 
 # Durbin-Levinson Algorithmus
 
-In diesem Abschnitt soll untersucht werden ob der Durbin-Levinson Algorithmus gute Vorhersagen für simulierte Daten liefert. Dafür werden zum einen 250 Datenpunkte verscheidener Prozesse simuliert. Nach 50 Beobachtungen wird eine "expanding window out-of-sample" Vorhersage durchgeführt. Diese 50 Beobachtungen werden übersprungen, da der Algorithmus eine bestimmte Menge an Daten benötigt um zuverlässig zu funktionieren. Also es werden alle Daten bis zum Zeitpunkt *t* verwendet um die Realisation in *t+1* vorherzusagen. Danach wird der Datensatz für die nächste Vorhersage um die Realisation in *t+1* erweitert. Für diese Art von Forecast wird eine Funktion definiert.
+In diesem Abschnitt soll untersucht werden ob der Durbin-Levinson Algorithmus gute Vorhersagen für simulierte Daten liefert. Dafür werden zum einen 250 Datenpunkte verscheidener Prozesse simuliert. Nach 50 Beobachtungen wird eine "expanding window out-of-sample" Vorhersage durchgeführt. Diese 50 Beobachtungen werden übersprungen, da der Algorithmus eine bestimmte Menge an Daten benötigt um zuverlässig zu funktionieren. Also werden alle Daten bis zum Zeitpunkt *t* verwendet um die Realisation in *t+1* vorherzusagen. Danach wird der Datensatz für die nächste Vorhersage um die Realisation in *t+1* erweitert. Für diese Art von Forecast wird eine Funktion definiert.
 
 ```{r}
 dl_forecast <- function(x){
@@ -201,8 +201,57 @@ plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
 
 ```
 
-Wie erwartet zeigen sich für vor allem für die AR-Prozesse positive Ergebnisse. Trotz recht wenigen Datenpunkten folgen die one-step-ahead Forecats der Zeitreihe zumindest in der Tendenz recht genau. Es zeigen sich vor allem bessere Ergebnisse für spätere Zeitpunkte, für die mehr Daten zur Verfügung stehen. Für MA-Prozesse ist theoretisch der Innovations-Alogrithmus besser geeignet.
+Wie erwartet zeigen sich für vor allem für die AR-Prozesse passable Ergebnisse. Trotz recht wenigen Datenpunkten folgen die one-step-ahead Forecats der Zeitreihe zumindest in der Tendenz. Es zeigen sich vor allem bessere Ergebnisse für spätere Zeitpunkte, für die mehr Daten zur Verfügung stehen. Für MA-Prozesse ist theoretisch der Innovations-Alogrithmus besser geeignet.
 Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus auch recht zufriedenstellend. Allgemein kann man sagen umso mehr "Struktur" in den Zeitriehen zu finden ist umso besser ist es auch möglich Vorhersagen mit dem Durbin-Levinson Algorithmus zu bestimmen.
+
+Was bei diesem Algorithmus noch auffällt, ist das die meisten geschätzen Parameter theoretisch gegen Null gehen sollten. Wegen dem Rauschen und der niedrigen Beobachtungszahl bei der Berechnung der Autokovarianzen aus hohen Lags ist dies in der Praxis nicht so. Somit könnten möglicherweise die Vorhersagen verbessert werden wenn man annimmt, dass die letzten 10 Beobachtungen besonders einflussreich für die Vorhersage sein sollten. Dafür werden die Rekursionen beim Durbin-Levinson auf 10 begrenzt, sodass er 10 $\phi's$ ausgibt. Diese werden dann für das forecasten verwendet. Dies wird in folgender Funktion umgesetzt.
+
+```{r}
+dl_forecast_10 <- function(x){
+        
+        x <- x$arma
+        len <- length(x)
+        forecast <- numeric(len)
+        
+        for(t in 0:(len-1)){
+                if(t<=49){
+                        forecast[t+1] <- NA
+                        next}
+                
+                x_temp <- x[1:t]
+                dl <- DL(x_temp, p=10L)
+                forecast[t+1] <- sum(dl*tail(x_temp,10))
+        }
+        forecast
+}
+```
+
+
+Nun werden mit dieser neuen Funktion Forecasts erzeugt.
+
+```{r}
+dl_1 <- dl_forecast_10(dl_sim1)
+dl_2 <- dl_forecast_10(dl_sim2)
+dl_3 <- dl_forecast_10(dl_sim3)
+dl_4 <- dl_forecast_10(dl_sim4)
+dl_5 <- dl_forecast_10(dl_sim5)
+dl_6 <- dl_forecast_10(dl_sim6)
+dl_7 <- dl_forecast_10(dl_sim7)
+```
+
+Danach werden die selben Plots wie oben nochmals mit den neuen Vorhersagen erzeugt.
+
+```{r fig4, fig.width = 7, fig.asp = .3}
+
+plot_dl_forecasts(dl_sim1, dl_1, "AR(1) - (0.9)")
+plot_dl_forecasts(dl_sim2, dl_2, "AR(2) - (0.6,0.2)")
+plot_dl_forecasts(dl_sim3, dl_3, "AR(3) - (0.6,-0.1,0.3)")
+plot_dl_forecasts(dl_sim4, dl_4, "Ma(1) - (0.5)")
+plot_dl_forecasts(dl_sim5, dl_5, "Ma(2) - (0.6,-0.2)")
+plot_dl_forecasts(dl_sim6, dl_6, "MA(3) - (0.6,-0.2,0.7)")
+plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
+
+```
 
 ##Innovation Prediction
 
@@ -238,7 +287,7 @@ for(i in 49:(length(dl_sim1$arma)-1))
 }
 ```
 Nun werden die Ergebnisse wie oben visualiert:
-```{r fig4, fig.width = 7, fig.asp = .3}
+```{r fig5, fig.width = 7, fig.asp = .3}
 
 plot_in_forecasts <- function(series, forecast, ...){
   tbl <- tibble(Series=series$arma, Forecast=forecast, Lag=1:250)
@@ -257,7 +306,7 @@ plot_in_forecasts(dl_sim6, in_sim6, "MA(3) - (0.6,-0.2,0.7)")
 plot_in_forecasts(dl_sim7, in_sim7, "ARMA(1,1) - (0.5, 0.5)")
 ```
 Allgemein erkennt man, dass der Algorithmus nach 100 Lags deutlich verbessert, aber bei den Spitzen meist noch zu niedrig schätzt. Die Verbesserung zwischen MA und AR Werte ist nicht deutlich zu sehen. Aber schlussendlich Vergleichen wir noch beide Algorithmen.
-```{r fig5, fig.width = 7, fig.asp = .3}
+```{r fig6, fig.width = 7, fig.asp = .3}
 plot_comp_forecasts <- function(series, forecast1, forecast2, ...){
   tbl <- tibble(Series=series$arma[200:250], Forecast1=forecast1[200:250], Forecast2=forecast2[200:250], Lag=200:250)
   
