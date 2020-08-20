@@ -133,29 +133,31 @@ dl_forecast <- function(x){
         forecast
 }
 ```
-
-Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), AR(2), AR(3), MA(1), ARMA(1,1).
+Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), AR(2), AR(3), MA(1), Ma(2), ARMA(1,1).
 
 ```{r}
 set.seed(123745)
 
-dl_sim1 <- arma_sim(phi = 0.7, n=250, burnin=1000)
-dl_sim2 <- arma_sim(phi = c(0.6,0.2), n=250, burnin=1000)
-dl_sim3 <- arma_sim(phi = c(0.6,-0.2), n=250, burnin=1000)
-dl_sim4 <- arma_sim(phi = c(0.7,0.3,-0.2), n=250, burnin=1000)
-dl_sim5 <- arma_sim(theta = 0.5, n=250, burnin=1000)
-dl_sim6 <- arma_sim(phi=0.5, theta = 0.5, n=250, burnin=1000)
+sim1 <- arma_sim(phi = 0.7, n=250, burnin=1000)
+sim2 <- arma_sim(phi = c(0.6,0.2), n=250, burnin=1000)
+sim3 <- arma_sim(phi = c(0.6,-0.2), n=250, burnin=1000)
+sim4 <- arma_sim(phi = c(0.7,0.3,-0.2), n=250, burnin=1000)
+sim5 <- arma_sim(theta = 0.5, n=250, burnin=1000)
+sim6 <- arma_sim(theta = c(0.4,0.9),n = 250, burnin = 1000)
+sim7 <- arma_sim(phi=0.5, theta = 0.5, n=250, burnin=1000)
+
 ```
 
 Nun werden für alle diese Prozesse die Vorhersagen berechnet.
 
 ```{r}
-dl_1 <- dl_forecast(dl_sim1)
-dl_2 <- dl_forecast(dl_sim2)
-dl_3 <- dl_forecast(dl_sim3)
-dl_4 <- dl_forecast(dl_sim4)
-dl_5 <- dl_forecast(dl_sim5)
-dl_6 <- dl_forecast(dl_sim6)
+dl_1 <- dl_forecast(sim1)
+dl_2 <- dl_forecast(sim2)
+dl_3 <- dl_forecast(sim3)
+dl_4 <- dl_forecast(sim4)
+dl_5 <- dl_forecast(sim5)
+dl_6 <- dl_forecast(sim6)
+dl_7 <- dl_forecast(sim7)
 ```
 
 Nun sollen die Ergbnisse visualisiert werden. Dazu wird die simulierte Zeitreihe mit den Vorhersagen jeweils in einem Plot dargestellt.
@@ -163,20 +165,20 @@ Nun sollen die Ergbnisse visualisiert werden. Dazu wird die simulierte Zeitreihe
 ```{r fig3, fig.width = 7, fig.asp = .3}
 
 plot_dl_forecasts <- function(series, forecast, ...){
-        tbl <- tibble(Series=series$arma, Forecast=forecast, Lag=1:250)
-        
-        ggplot(tbl, aes(x=Lag)) + 
-                geom_line(aes(y = Series), color = "darkred", size=0.4) + 
-                geom_line(aes(y = Forecast), color="steelblue", size=0.4) +
-                ggtitle(...)
+  tbl <- tibble(Series=series$arma, Forecast=forecast, Lag=1:250)
+  
+  ggplot(tbl, aes(x=Lag)) + 
+    geom_line(aes(y = Series), color = "darkred", size=0.4) + 
+    geom_line(aes(y = Forecast), color="steelblue", size=0.4) +
+    ggtitle(...)
 }
 
 plot_dl_forecasts(sim1, dl_1, "AR(1) - (0.7)")
 plot_dl_forecasts(sim2, dl_2, "AR(2) - (0.6, 0.2)")
-plot_dl_forecasts(sim3, dl_3, "AR(3) - (0.7,0.3,-0.2)")
-plot_dl_forecasts(sim4, dl_4, "Ma(1) - (0.5)")
-plot_dl_forecasts(sim5, dl_5, "Ma(2) - (0.6,-0.2)")
-plot_dl_forecasts(sim6, dl_6, "MA(3) - (0.6,-0.2,0.7)")
+plot_dl_forecasts(sim3, dl_3, "AR(2) - (0.6,-0.2)")
+plot_dl_forecasts(sim4, dl_4, "Ar(3) - (0.7,0.3,-0.2)")
+plot_dl_forecasts(sim5, dl_5, "Ma(1) - (0.6,-0.2)")
+plot_dl_forecasts(sim6, dl_6, "MA(2) - (0.4,0.9)")
 plot_dl_forecasts(sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
 
 ```
@@ -201,8 +203,4 @@ Zumindest ist $\hat{X}_{n+1}\approx\theta_{n,1}(X_{n}-\hat{X}_{n})$.
 Deshalb sollte der Innovation Algorithmus ein guter Schäter sein.
 
 Beim AR(1) ist der erst ab dem 7ter Spalte betragskleiner als 0,1, weshalb dort $\hat{X}_{n+1}$ von mehr Variabeln stärker abhängt, was das Vorhesagen
-ungenauer macht.
-```{r}
-
-```
-
+ungenauer macht. 
