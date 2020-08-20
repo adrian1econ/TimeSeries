@@ -52,9 +52,9 @@ arma_sim <- function(phi = NULL, theta = NULL, mu = 0, n, innov.gen = rnorm, inn
         l_max <- max(length(phi), length(theta))
         if(is.null(burnin)) burnin <- 10*l_max
         if(!is.numeric(burnin)) stop("burnin must be an integer or NULL!")
+        if(!length(burnin)==1) stop("burnin must be an integer or NULL!")
         if(burnin%%1!=0) stop("burnin must be an integer or NULL!")
         if(burnin < 0) stop("burnin must be positive!")
-        if(!length(burnin)==1) stop("burnin must be an integer or NULL!")
         if(burnin < max(p,q)) stop("burnin period must be at least as long as max(p,q)")
 
         # innov
