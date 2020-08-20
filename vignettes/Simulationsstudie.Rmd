@@ -151,6 +151,15 @@ Im folgenden werden beispielhaft Daten zu folgenden Prozessen simuliert: AR(1), 
 ```{r}
 set.seed(123745)
 
+<<<<<<< HEAD
+dl_sim1 <- arma_sim(phi = 0.9, n=250, burnin=1000)
+dl_sim2 <- arma_sim(phi = c(0.6,0.2), n=250, burnin=1000)
+dl_sim3 <- arma_sim(phi = c(0.6,-0.1,0.3), n=250, burnin=1000)
+dl_sim4 <- arma_sim(theta = 0.5, n=250, burnin=1000)
+dl_sim5 <- arma_sim(theta = c(0.6,-0.2), n=250, burnin=1000)
+dl_sim6 <- arma_sim(theta = c(0.6,-0.2,0.7), n=250, burnin=1000)
+dl_sim7 <- arma_sim(phi=0.5, theta = 0.5, n=250, burnin=1000)
+=======
 sim1 <- arma_sim(phi = 0.7, n=250, burnin=1000)
 sim2 <- arma_sim(phi = c(0.6,0.2), n=250, burnin=1000)
 sim3 <- arma_sim(phi = c(0.6,-0.2), n=250, burnin=1000)
@@ -159,11 +168,21 @@ sim5 <- arma_sim(theta = 0.5, n=250, burnin=1000)
 sim6 <- arma_sim(theta = c(0.4,0.9),n = 250, burnin = 1000)
 sim7 <- arma_sim(phi=0.5, theta = 0.5, n=250, burnin=1000)
 
+>>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
 ```
 
 Nun werden für alle diese Prozesse die Vorhersagen berechnet.
 
 ```{r}
+<<<<<<< HEAD
+dl_1 <- dl_forecast(dl_sim1)
+dl_2 <- dl_forecast(dl_sim2)
+dl_3 <- dl_forecast(dl_sim3)
+dl_4 <- dl_forecast(dl_sim4)
+dl_5 <- dl_forecast(dl_sim5)
+dl_6 <- dl_forecast(dl_sim6)
+dl_7 <- dl_forecast(dl_sim7)
+=======
 dl_1 <- dl_forecast(sim1)
 dl_2 <- dl_forecast(sim2)
 dl_3 <- dl_forecast(sim3)
@@ -171,6 +190,7 @@ dl_4 <- dl_forecast(sim4)
 dl_5 <- dl_forecast(sim5)
 dl_6 <- dl_forecast(sim6)
 dl_7 <- dl_forecast(sim7)
+>>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
 ```
 
 Nun sollen die Ergbnisse visualisiert werden. Dazu wird die simulierte Zeitreihe mit den Vorhersagen jeweils in einem Plot dargestellt.
@@ -186,6 +206,15 @@ plot_dl_forecasts <- function(series, forecast, ...){
     ggtitle(...)
 }
 
+<<<<<<< HEAD
+plot_dl_forecasts(dl_sim1, dl_1, "AR(1) - (0.7)")
+plot_dl_forecasts(dl_sim2, dl_2, "AR(2) - (0.6, 0.2)")
+plot_dl_forecasts(dl_sim3, dl_3, "AR(3) - (0.7,0.3,-0.2)")
+plot_dl_forecasts(dl_sim4, dl_4, "Ma(1) - (0.5)")
+plot_dl_forecasts(dl_sim5, dl_5, "Ma(2) - (0.6,-0.2)")
+plot_dl_forecasts(dl_sim6, dl_6, "MA(3) - (0.6,-0.2,0.7)")
+plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
+=======
 plot_dl_forecasts(sim1, dl_1, "AR(1) - (0.7)")
 plot_dl_forecasts(sim2, dl_2, "AR(2) - (0.6, 0.2)")
 plot_dl_forecasts(sim3, dl_3, "AR(2) - (0.6,-0.2)")
@@ -193,6 +222,7 @@ plot_dl_forecasts(sim4, dl_4, "Ar(3) - (0.7,0.3,-0.2)")
 plot_dl_forecasts(sim5, dl_5, "Ma(1) - (0.6,-0.2)")
 plot_dl_forecasts(sim6, dl_6, "MA(2) - (0.4,0.9)")
 plot_dl_forecasts(sim7, dl_7, "ARMA(1,1) - (0.5, 0.5)")
+>>>>>>> a975e450713acf0e2dd9077b912ad95fa612c925
 
 ```
 
@@ -203,12 +233,12 @@ Für den ARMA(1,1)-Prozess sind die Ergebnisse des Durbin-Levinson Algortihmus a
 
 In diesem Abschnitt soll untersucht werden ob der Innovation Algorithmus gute Vorhersagen für simulierte Daten liefert. Es wir dafür dasselbe Verfahren und die selben Funktionen wie beim DL Algorithmus angewendet, damit die beiden vergleichbar sind. Wir benutzen hier für die innovation_prediction Funktion.
 ```{r}
-theta_1 <- innovation(sim1)
-theta_4<- innovation(sim4)
-print("Ar(1)-Prozess")
-print(theta_1$theta[5:15,1:10])
-print("Ma(1)-Prozess")
-print(theta_4$theta[5:15,1:5])
+# theta_1 <- innovation(sim1)
+# theta_4<- innovation(sim4)
+# print("Ar(1)-Prozess")
+# print(theta_1$theta[5:15,1:10])
+# print("Ma(1)-Prozess")
+# print(theta_4$theta[5:15,1:5])
 ```
 <<<<<<< HEAD
 >>>>>>> c747b0c34b2bccde1a2c0e7a40cfbf193a98c170
