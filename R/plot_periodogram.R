@@ -26,11 +26,12 @@ plot_periodogram <- function(pd){
   f <- 2*pi*(1:nr)/n
   
   # 3. Plot Periodogram
-  ggplot() +
-    geom_point(mapping = aes(f,peri)) + 
-    geom_line(mapping = aes(f,peri)) + 
-    labs(title="Periodogramm der monatlichen Inflationsraten",
+  ggplot2::ggplot() +
+    ggplot2::geom_point(mapping = aes(f,peri)) + 
+    ggplot2::geom_line(mapping = aes(f,peri)) + 
+    ggplot2::labs(title="Periodogramm der monatlichen Inflationsraten",
          x="Frequenz", y = "I(w)") +
-    theme_classic()
+    ggplot2::theme_classic()
   
 }
+
