@@ -52,14 +52,14 @@ innovation_prediction <- function(ts,steps=1,lag.max=NA)
   }
   x_next <- 0 # First Prediction
   #Calculate previous Elements predictions
-  for (i in seq(lag.max))
+  for (i in seq(steps+lag.max-2))
   {
     x_next[i+1] <- next_x_sum(theta,x,x_next,i)
   }
   #Calculate lag.max+steps+1 Element prediction
   theta_ <- theta[lag.max+steps-1,steps:(lag.max+steps-1)]
-  x_ <-x[(lag.max+1):2]
-  x_next_ <- x_next[lag.max:1]
+  x_ <-x[(lag.max+steps):(steps+1)]
+  x_next_ <- x_next[(lag.max+steps-1):steps]
   x_prediction <- sum(theta_*(x_-x_next_))
   
   x_prediction

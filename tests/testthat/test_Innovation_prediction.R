@@ -20,21 +20,22 @@ test_that("Innovation_prediction works", {
   Innovation_Result <- innovation(vec)
   theta <- Innovation_Result$theta
   #Innovation_prediction test
-  x_new <- theta[1,1]*(vec[2])
-  x_new[2] <- theta[2,1]*(vec[3]-x_new)+theta[2,2]*vec[2]
-  x_new[3] <- theta[3,1]*(vec[4]-x_new[2])+theta[3,2]*(vec[3]-x_new[1])+theta[3,3]*vec[2]
+  x_new <- 0
+  x_new[2] <- theta[1,1]*(vec[2]-x_new)
+  x_new[3] <- theta[2,1]*(vec[3]-x_new[2])+theta[2,2]*(vec[2]-x_new[1])
+  x_new[4] <- theta[3,1]*(vec[4]-x_new[3])+theta[3,2]*(vec[3]-x_new[2])+theta[3,3]*(vec[2]-x_new[1])
   #Testing with lag.max:
-  expect_equal(innovation_prediction(vec,lag.max = 3),x_new[3])
-  
-  x_new[4] <- theta[4,1]*(vec[5]-x_new[3])+theta[4,2]*(vec[4]-x_new[2])+theta[4,3]*(vec[3]-x_new[1])+theta[4,4]*(vec[2])
-  x_new[5] <- theta[5,1]*(vec[6]-x_new[4])+theta[5,2]*(vec[5]-x_new[3])+theta[5,3]*(vec[4]-x_new[2])+theta[5,4]*(vec[3]-x_new[1])+theta[5,5]*vec[2]
-                                                                                                                                              
+  expect_equal(innovation_prediction(vec,lag.max = 3),x_new[4])
+  #Testing without lag.max
+  x_new[5] <- theta[4,1]*(vec[5]-x_new[4])+theta[4,2]*(vec[4]-x_new[3])+theta[4,3]*(vec[3]-x_new[2])+theta[4,4]*(vec[2]-x_new[1])
+  x_new[6] <- theta[5,1]*(vec[6]-x_new[5])+theta[5,2]*(vec[5]-x_new[4])+theta[5,3]*(vec[4]-x_new[3])+theta[5,4]*(vec[3]-x_new[2])+theta[5,5]*(vec[2]-x_new[1])
+  expect_equal(innovation_prediction(vec),x_new[6])                                                                                                                                            
   #Testing with other steps (step=2)
-  x_new <- theta[1,1]*(vec[3])
-  x_new[2] <- theta[2,1]*(vec[4]-x_new)+theta[2,2]*vec[3]
-  x_new[3] <- theta[3,1]*(vec[5]-x_new[2])+theta[3,2]*(vec[4]-x_new[1])+theta[3,3]*vec[3]
+  #x_new <- theta[1,1]*(vec[3])
+  #x_new[2] <- theta[2,1]*(vec[4]-x_new)+theta[2,2]*vec[3]
+  #x_new[3] <- theta[3,1]*(vec[5]-x_new[2])+theta[3,2]*(vec[4]-x_new[1])+theta[3,3]*vec[3]
 
-  X_2steps <- theta[5,2]*(vec[6]-x_new[3])+theta[5,3]*(vec[5]-x_new[2])+theta[5,4]*(vec[4]-x_new[1])+theta[5,5]*(vec[3])
+  X_2steps <- theta[5,2]*(vec[6]-x_new[5])+theta[5,3]*(vec[5]-x_new[4])+theta[5,4]*(vec[4]-x_new[3])+theta[5,5]*(vec[3]-x_new[2])
   
   expect_equal(innovation_prediction(vec,steps = 2),X_2steps)
 })
