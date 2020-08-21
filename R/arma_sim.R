@@ -19,6 +19,7 @@
 #' @param burnin an integer specifying the number of datapoints that are going
 #'   to be discarded, so that the characteristics of final series do not depend
 #'   on the initial values
+#' @param ... additional arguments for rand.gen, like mean or standard deviation
 #' @return object of class "arma" containing the simulated arma series, the
 #'   innovation series and the specified parameters
 #' @examples
