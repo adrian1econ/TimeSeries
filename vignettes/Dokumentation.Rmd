@@ -23,6 +23,7 @@ Diese Vignette demonstriert die Fähigkeiten des Pakets *TimeSeries*, welches fo
 * Implementierung des Durbin-Levinson Algorithmus (*DL*)
 * Plotten von Zeitreihen (*plot_ts*)
 * Implementierung des Innovations Algorithmus (*innovation*) und Vorhersagen (*innovation_prdeiction*)
+* Implementierung des Periodogramms (*Periodogram*) und des zugehörigen Plots (*plot_periodogram*)
 
 Dafür wird als erstes das Paket *TimeSeries* geladen.
 ```{r setup, message=F, warning=F}
@@ -89,7 +90,6 @@ plot_ts(sim_obj3)
 Durch das setzten des "Seeds" ist die Form der Zeitreihe gleich zum vorherigen Plot. Durch die höhere Standardabweihung sind die Ausschläge der Zeitreihe jedoch klar größer.
 
 ## Autokovarianz-Funktion
-
 Die Autokovarianz-Funktion gibt die Kovarianz der Realisationen eines Prozesses mit sich selbst zu früheren Zeitpunkten zurück. Damit ist sie ein erster Anhaltspunkt zu den zeitlichen Abhängigkeiten des Prozesses.
 Die Autokovarianz-Funktion ist nach Brookwell et al. (2002) für den Lag $h$ folgendermaßen definiert:
 
@@ -119,7 +119,6 @@ Anhand der beiden Autokovarianz-Funktionen kann man eine erste Aussage über die
 
 
 ## Durbin-Levinson Algorithmus
-
 Der Durbin-Levinson Algorithmus kann zur Vorhersage von Zeitreihen verwendet werden.
 Nach Brookwell et al. (2002) kann der Algorithmus verwendet werden um die $\phi's$ in folgender Formel zu schätzen:
 $$ P_nX_{n+1}=\phi_{n1}X_n+...+\phi_{nn}X_1. $$
@@ -134,16 +133,26 @@ und
 $$v_n=v_{n-1}[1-\phi_{nn}^2] $$
 Die Startwerte sind $\phi_{11}=\gamma(1)/\gamma(0)$ und $v_0=\gamma(0)$.
 
-Die Funktion *DL* implementiert den Durbin-Levinson Algorithmus und gibt die geschätzten $\phi's$ zurück. Diese können dann zur Vorhersage verwendet werden. Standardmäßig führt die Funktion die maximale Anzahl von Rekursionen durch (n-1), jedoch kann diese in der Inputvariable *p* reduziert werden.
+Die Funktion *DL* implementiert den Durbin-Levinson Algorithmus und gibt die geschätzten $\phi's$ zurück. Diese können dann zur Vorhersage verwendet werden. Standardmäßig führt die Funktion die maximale Anzahl von Rekursionen durch (n-1), jedoch kann diese in der Inputvariable *p* reduziert werden. Damit werden dann auch wenniger $\phi's$ geschätzt. Auf die Auswirkungen von kleinerem *p* wird in der Simulationsstudie genauer Bezug genommen.
 Folgender Code zeigt die Anwendung auf einen AR-Prozess, für welche der Algorithmus relativ gut funktioniert. Es wird beim Simulieren eine lange Burn-in Periode gewählt, um zu garantieren, dass der Prozess wenig von den zufälligen Startwerten abhängt.
 
 ```{r}
-set.seed(1234)
-ar_obj <- arma_sim(phi = c(0.6,-0.2), n = 200, burnin = 2000)
+set.seed(123)
+ar_obj <- arma_sim(phi = c(0.6,0.3), n = 100, burnin = 2000)
 dl <- DL(ar_obj)
-tail(dl,10)
 ```
-Der Output zeigt einen Ausschnitt der 200 geschätzten $\phi's$. Die letzten beiden Werte entsprechen in etwa den Inputparametern des AR-Prozesses. Die restlichen $\phi's$ sind nahe null. Somit wäre auch eine dementsprechend gute Vorhersage für den nächsten Zeitpunkt möglich.
+
+```{r}
+# p=100 (hier: Default)
+dl
+```
+
+```{r}
+# p=5
+DL(ar_obj, p=5L)
+```
+
+Der Output zeigt für beide Eingaben von *p* die geschätzten $\phi's$. Die letzten beiden Werte entsprechen jeweils in etwa den Inputparametern des AR-Prozesses. Die restlichen $\phi's$ sind nahe null. Somit wäre auch eine dementsprechend gute Vorhersage für den nächsten Zeitpunkt möglich.
 Die Vorhersage wird durch das Multiplizieren der $\phi's$ mit der Zeitreihe und anschließendes Summieren bestimmt.
 
 ```{r}
@@ -165,7 +174,6 @@ $$v_n=\kappa(0)-\sum_{j=0}^{n-1}\theta_{n,n-j}^2v_j$$
 Die Funktion *innovation* implementiert den innovation Algorithmus und gibt die geschätzten $\theta's$ und v's zurück. Dieser Algorhithmus wird von der *innovation_prediction* Funktion, wie oben beschrieben, zur Vorhersage des nächsten Wertes benutzt. Standardmäßig führt die Funktion die maximale Anzahl von Rekursionen durch (n-1), jedoch kann diese in der Inputvariable *lag.max* reduziert werden.
 Folgender Code zeigt die Anwendung auf einen MA-Prozess. Es wird beim Simulieren eine lange Burn-in Periode gewählt, um zu garantieren, dass der Prozess wenig von den zufälligen Startwerten abhängt.
 
-<<<<<<< HEAD
 
 ```{r}
 set.seed(1234)

@@ -47,7 +47,10 @@ $$
 $$
 \gamma(2)=Cov(X_{t+2},X_t)=...=\phi^2 \gamma_0
 $$
-Nun wird die theoretische ACF für eine AR(1)-Prozess mit $\phi=0.8$ und $n=100$ berechnet.
+$$
+usw...
+$$
+Nun wird die theoretische ACF (ersten 50 Autokovarianzen) für einen AR(1)-Prozess mit $\phi=0.8$ berechnet.
 Später wird die Standardnormalverteilung für das Rauschen verwendet. Somit gilt $\sigma_{\epsilon}^2=1$.
 
 ```{r fig1, fig.width = 7, fig.asp = .3}
@@ -67,11 +70,11 @@ true_acf_plot <- ggplot(true_tbl, aes(x=Lag, y=ACF)) +
 true_acf_plot
 ```
 
-Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACF geschätzt.
+Es ist die typische langsam abflachende Autokovarianzfunktion eines AR(1) zu erkennen.
 
 ## Vergleich von theoretischer mit geschätzter ACF
 
-Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACFs geschätzt. Es werden Zeitreihen unterschiedlicher Länge erzeugt um zu sehen, ob sich die geschätzten ACFs mit größerer Stichprobengröße dem theoretischen ACF annähern. Es werden lange "Burn-in"-Perioden gewählt, damit die Zeitreihe kaum von den zufälligen Startwerten abhängt. Dazu wird eine kleine Funktion erstellt, welche die simulierten ACFs mit dem theoretischen ACF plottet.
+Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACFs geschätzt. Es werden Zeitreihen unterschiedlicher Länge erzeugt um zu sehen, ob sich die geschätzten ACFs mit größerer Stichprobengröße dem theoretischen ACF annähern. Es werden lange "Burn-in"-Perioden gewählt, damit die Zeitreihe kaum von den zufälligen Startwerten abhängt. Dazu wird eine Funktion erstellt, welche die simulierten ACFs zusammen mit dem theoretischen ACF plottet.
 
 ```{r fig2, fig.width = 7, fig.asp = .3}
 set.seed(12345)
@@ -115,7 +118,7 @@ Der obige Vergleich zeigt deutlich, dass sich die geschätzte ACF dem theoretisc
 
 # Durbin-Levinson Algorithmus
 
-In diesem Abschnitt soll untersucht werden ob der Durbin-Levinson Algorithmus gute Vorhersagen für simulierte Daten liefert. Dafür werden zum einen 250 Datenpunkte verscheidener Prozesse simuliert. Nach 50 Beobachtungen wird eine "expanding window out-of-sample" Vorhersage durchgeführt. Diese 50 Beobachtungen werden übersprungen, da der Algorithmus eine bestimmte Menge an Daten benötigt um zuverlässig zu funktionieren. Also werden alle Daten bis zum Zeitpunkt *t* verwendet um die Realisation in *t+1* vorherzusagen. Danach wird der Datensatz für die nächste Vorhersage um die Realisation in *t+1* erweitert. Für diese Art von Forecast wird eine Funktion definiert.
+In diesem Abschnitt soll untersucht werden ob der Durbin-Levinson Algorithmus gute Vorhersagen für simulierte Daten liefert. Dafür werden zum einen 250 Datenpunkte verschiedener ARMA-Prozesse simuliert. Nach 50 Beobachtungen wird eine "expanding window out-of-sample" Vorhersage durchgeführt. Diese 50 Beobachtungen werden übersprungen, da der Algorithmus eine bestimmte Menge an Daten benötigt um zuverlässig zu funktionieren. Also werden alle Daten bis zum Zeitpunkt *t* verwendet um die Realisation in *t+1* vorherzusagen. Danach wird der Datensatz für die nächste Vorhersage um die Realisation in *t+1* erweitert. Für diese Art von Forecast wird eine Funktion definiert.
 
 ```{r}
 dl_forecast <- function(x){
