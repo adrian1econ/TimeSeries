@@ -25,7 +25,7 @@
 #' @examples
 #' arma_sim(phi = c(0.5,-0.1), theta = c(0.1,0.2,-0.3), n=100)
 #' @export
-arma_sim <- function(phi = NULL, theta = NULL, mu = 0, n, innov.gen = rnorm, innov = NULL,
+arma_sim <- function(phi = NULL, theta = NULL, mu = 0, n, innov.gen = stats::rnorm, innov = NULL,
                      burnin = NULL, ...){
 
         # 1. Check inputs:
