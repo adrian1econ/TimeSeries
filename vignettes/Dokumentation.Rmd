@@ -27,6 +27,7 @@ Diese Vignette demonstriert die Fähigkeiten des Pakets *TimeSeries*, welches fo
 Dafür wird als erstes das Paket *TimeSeries* geladen.
 ```{r setup, message=F, warning=F}
 library(TimeSeries)
+library(ggplot2)
 ```
         
 ## Simulation eines ARMA-Prozesses
