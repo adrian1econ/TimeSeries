@@ -2,7 +2,7 @@
 #'
 #'Description
 #'The innovation prediction use the innovation algorithm to predict the n-th Element after.
-#'
+#'For more details see the long documentation in the vignette "Dokumentation".
 #'Details
 #'The first step's-values are needed to detect prediction and the next lag.next values are used to detect the prediction.
 #'
