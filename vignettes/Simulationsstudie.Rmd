@@ -67,11 +67,8 @@ true_acf_plot <- ggplot(true_tbl, aes(x=Lag, y=ACF)) +
 true_acf_plot
 ```
 
-
-
-=======
 Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACF geschätzt.
-=======
+
 ## Vergleich von theoretischer mit geschätzter ACF
 
 Nun werden Daten mit den oben beschriebenen Eigenschaften simuliert und die ACFs geschätzt. Es werden Zeitreihen unterschiedlicher Länge erzeugt um zu sehen, ob sich die geschätzten ACFs mit größerer Stichprobengröße dem theoretischen ACF annähern. Es werden lange "Burn-in"-Perioden gewählt, damit die Zeitreihe kaum von den zufälligen Startwerten abhängt. Dazu wird eine kleine Funktion erstellt, welche die simulierten ACFs mit dem theoretischen ACF plottet.
@@ -262,7 +259,7 @@ plot_dl_forecasts(dl_sim7, dl_7, "ARMA(1,1) - (0.5, 0.5) - p=10")
 Die Plots zeigen, dass durch die Beschränkung der verwendeten Autokovarianzen deutlich bessere Ergebnisse erzielt werden können. Dem zugrunde liegt natürlich eine Annahme über die Ordnung des Prozesses. Meine Interpretation ist das sich viele Schätzungenauigkeiten akkumulieren, wenn so viele $\phi's$ wie Beobachtungen geschätzt werden. Auch die Schätzungen der letzten Autokovarianzen im ACF ist ungenau, da hierfür wenige (im Fall der letzten Autokovarianz nur eine) Beobachtungen vorliegen. Diese Ungenauigkeit schlägt sich dann auch die Vorhersagen durch den Durbin-Levinson Algortihmus durch. Somit dürfte die Wahl der optimalen Anzahl von Rekursionen im Alogrithmus von der Einschätzung der Länge des Prozesses und Anzahl der Datenpunkte abhängen.
 
 
-##Innovation Prediction
+## Innovation Prediction
 
 In diesem Abschnitt soll untersucht werden, ob der Innovation Algorithmus gute Vorhersagen für simulierte Daten liefert. Es wir dafür dasselbe Verfahren und die selben Funktionen wie beim DL Algorithmus angewendet, damit die beiden vergleichbar sind. Wir benutzen hier für die innovation_prediction Funktion.
 ```{r}
@@ -273,15 +270,15 @@ print(theta_1$theta[5:15,1:5])
 print("Ma(1)-Prozess")
 print(theta_4$theta[5:15,1:5])
 ```
-<<<<<<< HEAD
 
-=======
+
+
 Doch zuerst schauen wir uns die Thetas des MA(1) und des Ar(1) Prozesses des Innovation Algorithmus an. Beim Ma(1) erkennen, dass die erste Spalte nahe an unseren theta = 0,5 ist und die restlichen Werte Betrags kleiner als 0,1 sind.
 Dies bestätigt auch die Theorie. Dabei sollten sogar Werte außerhalb der ersten Spalten gleich Null sein. Dies bekommen wir nicht, da die unsere Werte noch ein bisschen Zufällig sind und vielleicht auch wegen der Maschinengenauigkeit.
 Zumindest ist $\hat{X}_{n+1}\approx\theta_{n,1}(X_{n}-\hat{X}_{n})$. 
 Deshalb sollte der Innovation Algorithmus ein guter Schäter sein.
 
-<<<<<<< HEAD
+
 
 Beim AR(1) ist der erst ab dem 7ter Spalte betragskleiner als 0,1, weshalb dort $\hat{X}_{n+1}$ von mehr Variabeln stärker abhängt, was das Vorhesagen
 ungenauer macht. 
@@ -303,7 +300,9 @@ for(i in 49:(length(dl_sim1$arma)-1))
   in_sim7[i+1] <- innovation_prediction(dl_sim7, lag.max = i)
 }
 ```
+
 Nun werden die Ergebnisse wie oben visualiert:
+
 ```{r fig5, fig.width = 7, fig.asp = .3}
 
 plot_in_forecasts <- function(series, forecast, ...){
@@ -322,7 +321,9 @@ plot_in_forecasts(dl_sim5, in_sim5, "Ma(2) - (0.6,-0.2)")
 plot_in_forecasts(dl_sim6, in_sim6, "MA(3) - (0.6,-0.2,0.7)")
 plot_in_forecasts(dl_sim7, in_sim7, "ARMA(1,1) - (0.5, 0.5)")
 ```
+
 Allgemein erkennt man, dass der Algorithmus nach 100 Lags deutlich verbessert, aber bei den Spitzen meist noch zu niedrig schätzt. Die Verbesserung zwischen MA und AR Werte ist nicht deutlich zu sehen. Aber schlussendlich Vergleichen wir noch beide Algorithmen.
+
 ```{r fig6, fig.width = 7, fig.asp = .3}
 plot_comp_forecasts <- function(series, forecast1, forecast2, ...){
   tbl <- tibble(Series=series$arma[200:250], Forecast1=forecast1[200:250], Forecast2=forecast2[200:250], Lag=200:250)
@@ -336,9 +337,9 @@ plot_comp_forecasts <- function(series, forecast1, forecast2, ...){
 plot_comp_forecasts(dl_sim1,dl_1,in_sim1, "AR(1) - (0.9)")
 plot_comp_forecasts(dl_sim4,dl_4,in_sim4, "MA(1) - (0.5)")
 ```
-<<<<<<< HEAD
+
 Man sieht in der näheren Analyse, dass beide Algorithmen nur die Tedenzen von den jeweiligen Graphen hinbekommen. Dies zeigt wie schwer schon allein bei so einfachen Prozessen die Vorhersage von Werten ist. Man kann erkennen, dass der Innovation Algorithmus besser beim Ma Prozess ist und DL Algorithums beim AR Prozess ist. Aber der unterschied ist überraschend gering
-<<<<<<< HEAD
+
 
 
 
