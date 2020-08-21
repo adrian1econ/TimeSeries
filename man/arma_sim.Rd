@@ -9,7 +9,7 @@ arma_sim(
   theta = NULL,
   mu = 0,
   n,
-  innov.gen = rnorm,
+  innov.gen = stats::rnorm,
   innov = NULL,
   burnin = NULL,
   ...
@@ -32,6 +32,8 @@ rand.gen is used}
 \item{burnin}{an integer specifying the number of datapoints that are going
 to be discarded, so that the characteristics of final series do not depend
 on the initial values}
+
+\item{...}{additional arguments for rand.gen, like mean or standard deviation}
 }
 \value{
 object of class "arma" containing the simulated arma series, the
